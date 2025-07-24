@@ -20,10 +20,10 @@ function DroneCamera() {
   useFrame((state) => {
     const time = state.clock.elapsedTime
 
-    if (phase === 0 && time < 4) {
-      const progress = time / 4
-      const radius = 15 - progress * 12
-      const height = 8 - progress * 6
+    if (phase === 0 && time < 2) {
+      const progress = time / 2
+      const radius = 10 - progress * 8
+      const height = 5 - progress * 4
 
       camera.position.x = Math.cos(time * 0.3) * radius
       camera.position.z = Math.sin(time * 0.3) * radius
@@ -31,22 +31,18 @@ function DroneCamera() {
       camera.lookAt(0, 0, 0)
     } else if (phase === 0) {
       setPhase(1)
-    } else if (phase === 1 && time < 8) {
-      const circleTime = (time - 4) * 0.8
-      camera.position.x = Math.cos(circleTime) * 4
-      camera.position.z = Math.sin(circleTime) * 4
-      camera.position.y = 2 + Math.sin(circleTime * 2) * 0.5
+    } else if (phase === 1 && time < 4) {
+      const circleTime = (time - 2) * 1.2
+      camera.position.x = Math.cos(circleTime) * 3
+      camera.position.z = Math.sin(circleTime) * 3
+      camera.position.y = 2 + Math.sin(circleTime * 2) * 0.4
       camera.lookAt(0, 0, 0)
     } else if (phase === 1) {
       setPhase(2)
     } else if (phase === 2) {
-      const targetX = 0
-      const targetY = 0
-      const targetZ = 3
-
-      camera.position.x = THREE.MathUtils.lerp(camera.position.x, targetX, 0.02)
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.02)
-      camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.02)
+      camera.position.x = THREE.MathUtils.lerp(camera.position.x, 0, 0.05)
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, 0, 0.05)
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, 3, 0.05)
       camera.lookAt(0, 0, 0)
     }
   })
@@ -56,14 +52,13 @@ function DroneCamera() {
 
 function ReactBitsParticles() {
   const pointsRef = useRef<THREE.Points>(null)
-  const particleCount = 3000
+  const particleCount = 1000
 
   const positions = new Float32Array(particleCount * 3)
   const colors = new Float32Array(particleCount * 3)
-  const sizes = new Float32Array(particleCount)
 
   for (let i = 0; i < particleCount; i++) {
-    const radius = 5 + Math.random() * 20
+    const radius = 5 + Math.random() * 10
     const theta = Math.random() * Math.PI * 2
     const phi = Math.random() * Math.PI
 
@@ -73,18 +68,15 @@ function ReactBitsParticles() {
 
     const color = new THREE.Color()
     const hue = 0.55 + Math.random() * 0.15
-    color.setHSL(hue, 1, 0.5 + Math.random() * 0.5)
+    color.setHSL(hue, 1, 0.6)
     colors[i * 3] = color.r
     colors[i * 3 + 1] = color.g
     colors[i * 3 + 2] = color.b
-
-    sizes[i] = Math.random() * 0.05 + 0.01
   }
 
   useFrame((state) => {
     if (pointsRef.current) {
       pointsRef.current.rotation.y = state.clock.elapsedTime * 0.03
-      pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.05) * 0.1
     }
   })
 
@@ -93,7 +85,6 @@ function ReactBitsParticles() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" count={particleCount} array={positions} itemSize={3} />
         <bufferAttribute attach="attributes-color" count={particleCount} array={colors} itemSize={3} />
-        <bufferAttribute attach="attributes-size" count={particleCount} array={sizes} itemSize={1} />
       </bufferGeometry>
       <pointsMaterial
         size={0.03}
@@ -111,19 +102,14 @@ function LogoDisplay() {
   return (
     <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
       <group position={[0, 0, 0]}>
-        {/* Holographic frame */}
         <mesh>
           <ringGeometry args={[2.2, 2.4, 32]} />
           <meshBasicMaterial color="#00d4ff" transparent opacity={0.6} />
         </mesh>
-
-        {/* Logo container with sticker peel effect */}
         <mesh position={[0, 0, 0.1]}>
           <planeGeometry args={[3.5, 2.3]} />
           <meshBasicMaterial color="#001122" transparent opacity={0.9} />
         </mesh>
-
-        {/* Glowing border */}
         <mesh position={[0, 0, 0.05]}>
           <planeGeometry args={[3.7, 2.5]} />
           <meshBasicMaterial color="#00d4ff" transparent opacity={0.3} />
@@ -136,13 +122,10 @@ function LogoDisplay() {
 function GridEnvironment() {
   return (
     <group>
-      {/* Floor grid */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -6, 0]}>
         <planeGeometry args={[100, 100, 50, 50]} />
         <meshBasicMaterial color="#003366" wireframe transparent opacity={0.15} />
       </mesh>
-
-      {/* Vertical grid walls */}
       <mesh rotation={[0, 0, 0]} position={[0, 0, -25]}>
         <planeGeometry args={[100, 50, 50, 25]} />
         <meshBasicMaterial color="#001133" wireframe transparent opacity={0.1} />
@@ -158,44 +141,40 @@ export default function Preloader({ onEnter, isLoaded }: PreloaderProps) {
     if (isLoaded) {
       const timer = setTimeout(() => {
         setShowButton(true)
-      }, 4000) // Reduced from 8000ms to 4000ms
+      }, 2500)
       return () => clearTimeout(timer)
     }
   }, [isLoaded])
 
-  // Add fallback timer
   useEffect(() => {
-    // Fallback to show button after 6 seconds regardless
     const fallbackTimer = setTimeout(() => {
       setShowButton(true)
-    }, 6000)
-
+    }, 3000)
     return () => clearTimeout(fallbackTimer)
   }, [])
 
   return (
     <div className="fixed inset-0 bg-black z-50 overflow-hidden">
-      <Canvas camera={{ position: [15, 8, 15], fov: 60 }}>
+      <Canvas camera={{ position: [12, 6, 12], fov: 60 }}>
         <Environment preset="night" />
         <ambientLight intensity={0.1} />
-        <pointLight position={[10, 10, 10]} intensity={0.8} color="#00d4ff" />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8000ff" />
-        <Stars radius={300} depth={60} count={1000} factor={7} saturation={0} fade speed={1} />
-
+        <pointLight position={[10, 10, 10]} intensity={0.6} color="#00d4ff" />
+        <pointLight position={[-10, -10, -10]} intensity={0.4} color="#8000ff" />
+        <Stars radius={100} depth={40} count={500} factor={4} saturation={0} fade speed={1} />
         <DroneCamera />
         <ReactBitsParticles />
         <LogoDisplay />
         <GridEnvironment />
       </Canvas>
 
-      {/* Logo with sticker peel effect */}
+      {/* Logo */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
         <StickerPeel className="w-64 h-40">
           <Image src="/images/cygnuz-logo.png" alt="Cygnuz AI" width={256} height={160} className="object-contain" />
         </StickerPeel>
       </div>
 
-      {/* Rotating text around logo */}
+      {/* Rotating text */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-5">
         <RotatingText
           text="• AI AUTOMATION • INTELLIGENT SYSTEMS • FUTURE TECH • "
@@ -204,30 +183,24 @@ export default function Preloader({ onEnter, isLoaded }: PreloaderProps) {
         />
       </div>
 
-      {/* Loading indicator */}
+      {/* Loading bar */}
       {!showButton && (
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
-          <div className="relative">
-            <div className="flex items-center justify-center space-x-1 mb-4">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-1 h-8 bg-gradient-to-t from-cyan-400 to-blue-500 rounded-full animate-pulse"
-                  style={{
-                    animationDelay: `${i * 0.1}s`,
-                    animationDuration: "1s",
-                  }}
-                />
-              ))}
-            </div>
-            <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-lg blur-sm" />
+          <div className="flex items-center justify-center space-x-1 mb-4">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="w-1 h-8 bg-gradient-to-t from-cyan-400 to-blue-500 rounded-full animate-pulse"
+                style={{ animationDelay: `${i * 0.1}s`, animationDuration: "1s" }}
+              />
+            ))}
           </div>
           <p className="text-cyan-400 text-sm font-light tracking-wider">INITIALIZING AI SYSTEMS</p>
           <div className="mt-2 w-32 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto" />
         </div>
       )}
 
-      {/* Skip button - appears after 2 seconds */}
+      {/* Skip button */}
       {!showButton && isLoaded && (
         <div className="absolute top-8 right-8 z-20">
           <button
@@ -239,7 +212,7 @@ export default function Preloader({ onEnter, isLoaded }: PreloaderProps) {
         </div>
       )}
 
-      {/* Enter button - make it more visible */}
+      {/* Enter button */}
       {showButton && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
           <div className="text-center pointer-events-auto relative">
@@ -258,7 +231,7 @@ export default function Preloader({ onEnter, isLoaded }: PreloaderProps) {
         </div>
       )}
 
-      {/* ReactBits corner decorations */}
+      {/* Corners */}
       <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-cyan-400/50" />
       <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-cyan-400/50" />
       <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-cyan-400/50" />

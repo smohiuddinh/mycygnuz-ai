@@ -8,6 +8,7 @@ import AIDemo from "@/components/ai-demo"
 import Portfolio from "@/components/portfolio"
 import ContactFooter from "@/components/contact-footer"
 import SplashCursor from "@/components/splash-cursor"
+import Navbar from '@/components/Navbar';
 
 export default function Home() {
   const [showPreloader, setShowPreloader] = useState(true)
@@ -33,7 +34,10 @@ export default function Home() {
     <>
       <SplashCursor />
       <main className="bg-black text-white overflow-x-hidden">
+            <Navbar  />
+
         <HeroSection />
+
         <WhatWeDo />
         <AIDemo />
         <Portfolio />

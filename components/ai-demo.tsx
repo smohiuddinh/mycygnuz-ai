@@ -46,7 +46,7 @@ export default function AIDemo() {
   }
 
   return (
-    <section className="py-16 px-6 bg-gray-900 relative overflow-hidden">
+    <section id="projects" className="py-16 px-6 bg-gray-900 relative overflow-hidden">
       {/* ReactBits background elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full blur-3xl" />

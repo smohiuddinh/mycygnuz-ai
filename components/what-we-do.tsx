@@ -68,6 +68,7 @@ export default function WhatWeDo() {
 
   return (
     <section
+      id="about"
       ref={sectionRef}
       className="py-16 px-6 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden"
     >

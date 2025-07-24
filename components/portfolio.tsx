@@ -8,7 +8,7 @@ const caseStudies = [
     id: "ecommerce",
     title: "E-commerce Automation",
     content: (
-      <div className="text-center">
+      <div id="services" className="text-center">
         <h3 className="text-xl font-bold text-white mb-2">E-commerce Automation</h3>
         <p className="text-cyan-400 mb-3 text-sm">TechStore Inc.</p>
         <p className="text-gray-300 text-sm mb-4">
