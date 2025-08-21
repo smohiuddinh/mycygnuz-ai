@@ -56,13 +56,12 @@ export default function HeroSection() {
           <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-2xl blur-xl" />
           <h1
             ref={titleRef}
-            className="relative text-4xl md:text-6xl font-bold mb-4 opacity-0 transform translate-y-10 transition-all duration-1000 ease-out"
+            className="relative text-4xl md:text-5xl font-bold mb-4 opacity-0 transform translate-y-10 transition-all duration-1000 ease-out"
           >
             <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-              Reimagining Business
-            </span>
+AI-Driven Websites & Mobile Apps       </span>
             <br />
-            <span className="text-white text-3xl md:text-5xl">Through AI Automation</span>
+            <span className="text-white text-3xl md:text-4xl">with Intelligent Automation for Businesses</span>
           </h1>
         </div>
 
