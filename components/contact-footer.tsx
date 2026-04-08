@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, Phone, MapPin, Send, Linkedin, Twitter, Instagram } from "lucide-react"
 import Image from "next/image"
+import emailjs from "@emailjs/browser"
 
 function ReactBitsContactParticles() {
   const pointsRef = useRef<THREE.Points>(null)
@@ -56,9 +57,39 @@ export default function ContactFooter() {
     message: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
+  
+    try {
+      const result = await emailjs.send(
+        "service_6m6ph5k",     // from EmailJS
+        "template_3z6gfkp",    // your HTML template
+        {
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          message: formData.message,
+          submission_date: new Date().toLocaleString(),
+        },
+        "0mdz-5eMwYOFC8ryQ"      // EmailJS public key
+      )
+  
+      console.log("SUCCESS!", result.text)
+  
+      // reset form (nice UX)
+      setFormData({
+        name: "",
+        email: "",
+        company: "",
+        message: "",
+      })
+  
+      alert("Message sent successfully 🚀")
+  
+    } catch (error) {
+      console.error("FAILED...", error)
+      alert("Something went wrong ❌")
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -140,7 +171,7 @@ export default function ContactFooter() {
                   <Textarea name="message" placeholder="Tell us about your project..." value={formData.message} onChange={handleChange} rows={3} className="bg-gray-700/70 border-gray-600 text-white placeholder-gray-400 text-sm backdrop-blur-sm" required />
                   <Button type="submit" className="w-full relative bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white py-2.5 rounded-lg font-medium border border-cyan-400/50">
                     <span className="relative z-10 flex items-center justify-center">
-                      Send Message <Send className="ml-2 h-4 w-4" />
+                      Lets Take It To Next Level !<Send className="ml-2 h-4 w-4" />
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-400/20 rounded-lg blur-sm" />
                   </Button>
@@ -163,7 +194,7 @@ export default function ContactFooter() {
                   </div>
                   <div className="flex items-center">
                     <MapPin className="h-4 w-4 text-cyan-400 mr-3" />
-                    <span className="text-gray-300 text-sm">London, UK</span>
+                    <span className="text-gray-300 text-sm">Karachi, Pakistan</span>
                   </div>
                 </div>
               </div>
