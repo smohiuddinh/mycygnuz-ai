@@ -5,10 +5,10 @@ import Preloader from "@/components/preloader"
 import HeroSection from "@/components/hero-section"
 import WhatWeDo from "@/components/what-we-do"
 import AIDemo from "@/components/ai-demo"
-import Portfolio from "@/components/portfolio"
 import ContactFooter from "@/components/contact-footer"
 import SplashCursor from "@/components/splash-cursor"
 import Navbar from '@/components/Navbar';
+import { Portfolio } from "@/components/portfolio"
 
 export default function Home() {
   const [showPreloader, setShowPreloader] = useState(true)

@@ -73,7 +73,7 @@ AI-Driven Websites & Mobile Apps       </span>
           businesses operate.
         </p>
 
-        <div
+        {/* <div
           ref={buttonsRef}
           className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 transform translate-y-10 transition-all duration-1000 ease-out"
         >
@@ -98,7 +98,7 @@ AI-Driven Websites & Mobile Apps       </span>
               Request Demo
             </span>
           </StarBorderButton>
-        </div>
+        </div> */}
       </div>
     </section>
   )

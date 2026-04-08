@@ -1,196 +1,100 @@
 "use client"
 
-import { TrendingUp, Users, Clock, DollarSign } from "lucide-react"
-import CircularGallery from "@/components/circular-gallery"
+import { Button } from "@/components/ui/button"
+import { useState, useRef } from "react"
+import Image from "next/image"
 
-const caseStudies = [
-  {
-    id: "ecommerce",
-    title: "E-commerce Automation",
-    content: (
-      <div id="services" className="text-center">
-        <h3 className="text-xl font-bold text-white mb-2">E-commerce Automation</h3>
-        <p className="text-cyan-400 mb-3 text-sm">TechStore Inc.</p>
-        <p className="text-gray-300 text-sm mb-4">
-          Implemented AI chatbot handling 80% of customer inquiries, reducing response time by 95%.
-        </p>
-        <div className="grid grid-cols-3 gap-2 text-xs">
-          <div className="bg-gray-700/50 p-2 rounded">
-            <TrendingUp className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">95%</div>
-            <div className="text-gray-400">Faster</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <Users className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">4.8/5</div>
-            <div className="text-gray-400">Rating</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <DollarSign className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">60%</div>
-            <div className="text-gray-400">Savings</div>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "healthcare",
-    title: "Healthcare Appointment System",
-    content: (
-      <div className="text-center">
-        <h3 className="text-xl font-bold text-white mb-2">Healthcare System</h3>
-        <p className="text-cyan-400 mb-3 text-sm">MedCenter Group</p>
-        <p className="text-gray-300 text-sm mb-4">
-          AI-powered calling agent for appointment management, reducing booking time by 70%.
-        </p>
-        <div className="grid grid-cols-3 gap-2 text-xs">
-          <div className="bg-gray-700/50 p-2 rounded">
-            <Clock className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">70%</div>
-            <div className="text-gray-400">Reduction</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <Users className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">40%</div>
-            <div className="text-gray-400">Less No-shows</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <TrendingUp className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">3x</div>
-            <div className="text-gray-400">Efficiency</div>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "finance",
-    title: "Financial Services Automation",
-    content: (
-      <div className="text-center">
-        <h3 className="text-xl font-bold text-white mb-2">Financial Services</h3>
-        <p className="text-cyan-400 mb-3 text-sm">FinanceFlow Ltd.</p>
-        <p className="text-gray-300 text-sm mb-4">
-          Automated workflow with AI decision-making system, processing loans 85% faster.
-        </p>
-        <div className="grid grid-cols-3 gap-2 text-xs">
-          <div className="bg-gray-700/50 p-2 rounded">
-            <Clock className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">85%</div>
-            <div className="text-gray-400">Faster</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <TrendingUp className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">25%</div>
-            <div className="text-gray-400">More Approvals</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <DollarSign className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">40%</div>
-            <div className="text-gray-400">Revenue Boost</div>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "retail",
-    title: "Retail Optimization",
-    content: (
-      <div className="text-center">
-        <h3 className="text-xl font-bold text-white mb-2">Retail Optimization</h3>
-        <p className="text-cyan-400 mb-3 text-sm">ShopSmart Chain</p>
-        <p className="text-gray-300 text-sm mb-4">
-          Inventory management AI reducing waste by 45% and improving stock accuracy.
-        </p>
-        <div className="grid grid-cols-3 gap-2 text-xs">
-          <div className="bg-gray-700/50 p-2 rounded">
-            <TrendingUp className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">45%</div>
-            <div className="text-gray-400">Less Waste</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <Users className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">98%</div>
-            <div className="text-gray-400">Accuracy</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <DollarSign className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">30%</div>
-            <div className="text-gray-400">Profit Up</div>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: "manufacturing",
-    title: "Manufacturing Intelligence",
-    content: (
-      <div className="text-center">
-        <h3 className="text-xl font-bold text-white mb-2">Manufacturing AI</h3>
-        <p className="text-cyan-400 mb-3 text-sm">TechFactory Pro</p>
-        <p className="text-gray-300 text-sm mb-4">
-          Predictive maintenance AI preventing 90% of equipment failures and downtime.
-        </p>
-        <div className="grid grid-cols-3 gap-2 text-xs">
-          <div className="bg-gray-700/50 p-2 rounded">
-            <Clock className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">90%</div>
-            <div className="text-gray-400">Prevention</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <TrendingUp className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">50%</div>
-            <div className="text-gray-400">Efficiency</div>
-          </div>
-          <div className="bg-gray-700/50 p-2 rounded">
-            <DollarSign className="h-3 w-3 text-cyan-400 mx-auto mb-1" />
-            <div className="text-cyan-400 font-bold">35%</div>
-            <div className="text-gray-400">Cost Cut</div>
-          </div>
-        </div>
-      </div>
-    ),
-  },
+const logos = [
+  { name: "Engro", image: "/cygnuz/engro.png" },
+  { name: "Ehive", image: "/cygnuz/ehive.png" },
+  { name: "PalmCare", image: "/cygnuz/palmcare.webp" },
+  { name: "Suhaib", image: "/cygnuz/suhaib.png" },
+  { name: "Legerium", image: "/cygnuz/logo_bg.png" },
 ]
 
-export default function Portfolio() {
+const secondRowLogos = [
+  { name: "Ecosaathi", image: "/cygnuz/ecosaathi.png" },
+  { name: "UrEwaste", image: "/cygnuz/urewaste.png" },
+  { name: "Terminix", image: "/cygnuz/terminix.png" },
+  { name: "Infinitely Digital", image: "/cygnuz/infinitely.png" },
+]
+
+function LogoCard({ logo, onEnter, onLeave }: { logo: { name: string; image: string }; onEnter: () => void; onLeave: () => void }) {
   return (
-    <section className="py-16 px-6 bg-black relative overflow-hidden">
-      {/* ReactBits background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            linear-gradient(45deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px),
-            linear-gradient(-45deg, rgba(128, 0, 255, 0.1) 1px, transparent 1px)
-          `,
-            backgroundSize: "30px 30px",
-          }}
-        />
+    <div
+      className="flex-shrink-0 mx-2"
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+    >
+      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center justify-center transition-colors hover:border-white/20">
+        <div className="relative w-16 h-8 sm:w-20 sm:h-10">
+          <Image
+            src={logo.image}
+            alt={logo.name}
+            fill
+            className="object-contain opacity-85"
+            sizes="80px"
+          />
+        </div>
       </div>
+    </div>
+  )
+}
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-12">
-          <div className="relative inline-block">
-            <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur-lg" />
-            <h2 className="relative text-3xl md:text-4xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                Success Stories
-              </span>
-            </h2>
-          </div>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-8">
-            Discover how we've transformed businesses across industries with our AI automation solutions.
-          </p>
+function MarqueeRow({
+  items,
+  direction,
+  duration,
+}: {
+  items: { name: string; image: string }[]
+  direction: "left" | "right"
+  duration: string
+}) {
+  const [paused, setPaused] = useState(false)
+  const tripled = [...items, ...items, ...items]
+
+  return (
+    <div className="flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] mb-4">
+      <div
+        className={`flex whitespace-nowrap ${
+          direction === "right" ? "animate-marquee-right" : "animate-marquee-left"
+        }`}
+        style={{
+          animationDuration: duration,
+          animationPlayState: paused ? "paused" : "running",
+          width: "max-content",
+        }}
+      >
+        {tripled.map((logo, i) => (
+          <LogoCard
+            key={i}
+            logo={logo}
+            onEnter={() => setPaused(true)}
+            onLeave={() => setPaused(false)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function Portfolio() {
+  return (
+    <section className="text-white py-16 sm:py-20 overflow-hidden">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="flex flex-col items-center justify-between mb-12 sm:flex-row sm:items-center">
+          <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl text-center sm:text-left leading-tight">
+            Meet our <span className="text-lime-300">top-tier</span>
+            <br />
+            customers
+          </h2>
+    
         </div>
 
-        <div className="flex justify-center">
-          <CircularGallery items={caseStudies} radius={180} />
-        </div>
+        {/* Marquee Rows */}
+        <MarqueeRow items={logos} direction="right" duration="18s" />
+        <MarqueeRow items={secondRowLogos} direction="left" duration="22s" />
       </div>
     </section>
   )

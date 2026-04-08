@@ -1,120 +1,28 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-function SplashCursor({
-  SIM_RESOLUTION = 64,
-  DYE_RESOLUTION = 512,
-  CAPTURE_RESOLUTION = 256,
-  DENSITY_DISSIPATION = 2.5,
-  VELOCITY_DISSIPATION = 1.8,
-  PRESSURE = 0.05,
-  PRESSURE_ITERATIONS = 10,
-  CURL = 1.5,
-  SPLAT_RADIUS = 0.15,
-  SPLAT_FORCE = 4000,
-  SHADING = false,
-  COLOR_UPDATE_SPEED = 5,
-  BACK_COLOR = { r: 0.5, g: 0, b: 0 },
-  TRANSPARENT = true
-}) {
-  const canvasRef = useRef(null);
+function StarCursor() {
+  const [pos, setPos] = useState({ x: -100, y: -100 });
+  const [angle, setAngle] = useState(0);
+  const rafRef = useRef<number>();
+  const angleRef = useRef(0);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const onMove = (e: MouseEvent) => {
+      setPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', onMove);
 
-    let lastFrameTime = 0;
-
-    function pointerPrototype() {
-      this.texcoordX = 0;
-      this.texcoordY = 0;
-      this.prevTexcoordX = 0;
-      this.prevTexcoordY = 0;
-      this.deltaX = 0;
-      this.deltaY = 0;
-      this.moved = false;
-      this.color = [1, 0, 0];
-    }
-
-    const pointer = new pointerPrototype();
-
-    const gl =
-      canvas.getContext('webgl2') ||
-      canvas.getContext('webgl') ||
-      canvas.getContext('experimental-webgl');
-
-    if (!gl) return;
-
-    function resizeCanvas() {
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    }
-
-    function clear() {
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    }
-
-    function updatePointer(e) {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      pointer.deltaX = x - pointer.texcoordX;
-      pointer.deltaY = y - pointer.texcoordY;
-
-      pointer.prevTexcoordX = pointer.texcoordX;
-      pointer.prevTexcoordY = pointer.texcoordY;
-
-      pointer.texcoordX = x;
-      pointer.texcoordY = y;
-
-      pointer.moved = true;
-    }
-
-    window.addEventListener('mousemove', updatePointer);
-
-    function renderFakeFluid() {
-      if (!pointer.moved) return;
-
-      pointer.moved = false;
-
-      const size = 40;
-
-      gl.enable(gl.SCISSOR_TEST);
-      gl.scissor(
-        pointer.texcoordX - size / 2,
-        canvas.height - pointer.texcoordY - size / 2,
-        size,
-        size
-      );
-
-      gl.clearColor(Math.random(), 0, 0.2, 0.3);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-
-      gl.disable(gl.SCISSOR_TEST);
-    }
-
-    function loop(time) {
-      if (time - lastFrameTime < 16) {
-        requestAnimationFrame(loop);
-        return;
-      }
-
-      lastFrameTime = time;
-
-      resizeCanvas();
-      clear();
-      renderFakeFluid();
-
-      requestAnimationFrame(loop);
-    }
-
-    requestAnimationFrame(loop);
+    const spin = () => {
+      angleRef.current += 3;
+      setAngle(angleRef.current);
+      rafRef.current = requestAnimationFrame(spin);
+    };
+    rafRef.current = requestAnimationFrame(spin);
 
     return () => {
-      window.removeEventListener('mousemove', updatePointer);
+      window.removeEventListener('mousemove', onMove);
+      cancelAnimationFrame(rafRef.current!);
     };
   }, []);
 
@@ -123,20 +31,32 @@ function SplashCursor({
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 50,
+        zIndex: 9999,
         pointerEvents: 'none',
       }}
     >
-      <canvas
-        ref={canvasRef}
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 28 28"
         style={{
-          width: '100vw',
-          height: '100vh',
-          display: 'block',
+          position: 'absolute',
+          left: pos.x - 14,
+          top: pos.y - 14,
+          transform: `rotate(${angle}deg)`,
+          filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.8))',
         }}
-      />
+      >
+        {/* 4-point star */}
+        <polygon
+          points="14,2 16.5,11.5 26,14 16.5,16.5 14,26 11.5,16.5 2,14 11.5,11.5"
+          fill="white"
+        />
+        {/* Center dot */}
+        <circle cx="14" cy="14" r="2" fill="white" opacity="0.6" />
+      </svg>
     </div>
   );
 }
 
-export default SplashCursor;
+export default StarCursor;
