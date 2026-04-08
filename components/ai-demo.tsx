@@ -228,7 +228,10 @@ export default function AIAgentDemo() {
   const [isTyping, setIsTyping] = useState<boolean>(false)
   const [inputVal, setInputVal] = useState<string>("")
   const [demoIdx, setDemoIdx] = useState<number>(0)
-  const [demoRunning, setDemoRunning] = useState<boolean>(true)
+  const [demoRunning, setDemoRunning] = useState<boolean>(false)
+
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const demoStartedByScrollRef = useRef(false)
 
   // Ref to the scrollable messages box — NOT the page
   const messagesBoxRef = useRef<HTMLDivElement | null>(null)
@@ -248,6 +251,26 @@ export default function AIAgentDemo() {
   useEffect(() => {
     scrollToBottom()
   }, [messages, isTyping])
+
+  // Start the scripted demo once this section scrolls into view
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (demoStartedByScrollRef.current) return
+        if (entries.some((e) => e.isIntersecting)) {
+          demoStartedByScrollRef.current = true
+          setDemoRunning(true)
+        }
+      },
+      { threshold: 0 }
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   // Demo auto-play
   useEffect(() => {
@@ -306,6 +329,7 @@ export default function AIAgentDemo() {
 
   return (
     <section
+      ref={sectionRef}
       style={{
         padding: "2.5rem 1.5rem",
         background: "#0a0e1a",
