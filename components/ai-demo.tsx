@@ -592,23 +592,29 @@ export default function AIAgentDemo() {
 
           {/* CTA */}
           <button
-            className="ai-cta-btn"
-            style={{
-              width: "100%",
-              padding: 10,
-              borderRadius: 8,
-              background: "#185FA5",
-              color: "#ffffff",
-              border: "none",
-              cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 500,
-              fontFamily: "inherit",
-              transition: "background 0.15s",
-            }}
-          >
-            Schedule a live demo
-          </button>
+  className="ai-cta-btn"
+  style={{
+    width: "100%",
+    padding: 10,
+    borderRadius: 8,
+    background: "#185FA5",
+    color: "#ffffff",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 13,
+    fontWeight: 500,
+    fontFamily: "inherit",
+    transition: "background 0.15s",
+  }}
+  onClick={() => {
+    const contactSection = document.querySelector("#contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+    }
+  }}
+>
+  Schedule a live demo
+</button>
         </div>
       </div>
     </section>
