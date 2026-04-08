@@ -1,241 +1,394 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { Float, Environment, Stars } from "@react-three/drei"
+import { Environment, Stars } from "@react-three/drei"
 import * as THREE from "three"
 import Image from "next/image"
-import RotatingText from "@/components/rotating-text"
-import StickerPeel from "@/components/sticker-peel"
 
 interface PreloaderProps {
   onEnter: () => void
   isLoaded: boolean
 }
 
-function DroneCamera() {
+// ─── Cinematic Camera ────────────────────────────────────────────────────────
+// Phase 0 (0–3s):   Wide drone sweep, high altitude
+// Phase 1 (3–6s):   Descends, tightens orbit
+// Phase 2 (6–9s):   Locks on logo, slow hover
+// Phase 3 (9–11s):  Push-in zoom straight at logo
+// Phase 4 (11s+):   Hold, signal parent
+function CinematicCamera({ onZoomComplete }: { onZoomComplete: () => void }) {
   const { camera } = useThree()
-  const [phase, setPhase] = useState(0)
+  const notified = useRef(false)
+  const lastAngle = useRef(0)
 
   useFrame((state) => {
-    const time = state.clock.elapsedTime
+    const t = state.clock.elapsedTime
 
-    if (phase === 0 && time < 2) {
-      const progress = time / 2
-      const radius = 10 - progress * 8
-      const height = 5 - progress * 4
+    if (t < 3) {
+      // Wide high-altitude sweep
+      const p = t / 3
+      const radius = 20 - p * 5
+      const height = 13 - p * 3
+      const angle = t * 0.22
+      lastAngle.current = angle
+      camera.position.set(
+        Math.cos(angle) * radius,
+        height + Math.sin(t * 0.35) * 1.2,
+        Math.sin(angle) * radius
+      )
+      camera.lookAt(0, 0, 0)
 
-      camera.position.x = Math.cos(time * 0.3) * radius
-      camera.position.z = Math.sin(time * 0.3) * radius
-      camera.position.y = height
+    } else if (t < 6) {
+      // Descend and tighten
+      const p = (t - 3) / 3
+      const ease = 1 - Math.pow(1 - p, 3)
+      const radius = 15 - ease * 12
+      const height = 10 - ease * 9
+      const angle = lastAngle.current + p * 1.8
+      camera.position.set(
+        Math.cos(angle) * radius,
+        height + Math.sin(t * 0.5) * 0.6,
+        Math.sin(angle) * radius
+      )
       camera.lookAt(0, 0, 0)
-    } else if (phase === 0) {
-      setPhase(1)
-    } else if (phase === 1 && time < 4) {
-      const circleTime = (time - 2) * 1.2
-      camera.position.x = Math.cos(circleTime) * 3
-      camera.position.z = Math.sin(circleTime) * 3
-      camera.position.y = 2 + Math.sin(circleTime * 2) * 0.4
+
+    } else if (t < 9) {
+      // Lock and hover — slow, intimate
+      const p = (t - 6) / 3
+      const ease = 1 - Math.pow(1 - p, 2)
+      const radius = 3 - ease * 1.8
+      const height = 1 - ease * 0.9
+      const angle = lastAngle.current + 1.8 + p * 0.8
+      camera.position.set(
+        Math.cos(angle) * radius,
+        height + Math.sin(t * 1.1) * 0.1,
+        Math.sin(angle) * radius
+      )
       camera.lookAt(0, 0, 0)
-    } else if (phase === 1) {
-      setPhase(2)
-    } else if (phase === 2) {
-      camera.position.x = THREE.MathUtils.lerp(camera.position.x, 0, 0.05)
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, 0, 0.05)
-      camera.position.z = THREE.MathUtils.lerp(camera.position.z, 3, 0.05)
+
+    } else if (t < 11) {
+      // Push straight in — fly into logo
+      const p = (t - 9) / 2
+      const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2
+      const z = THREE.MathUtils.lerp(1.2, 0.05, ease)
+      camera.position.set(
+        THREE.MathUtils.lerp(camera.position.x, 0, 0.12),
+        THREE.MathUtils.lerp(camera.position.y, 0, 0.12),
+        z
+      )
       camera.lookAt(0, 0, 0)
+
+    } else {
+      camera.position.set(0, 0, 0.05)
+      camera.lookAt(0, 0, 0)
+      if (!notified.current) {
+        notified.current = true
+        onZoomComplete()
+      }
     }
   })
 
   return null
 }
 
-function ReactBitsParticles() {
-  const pointsRef = useRef<THREE.Points>(null)
-  const particleCount = 1000
+// ─── Ambient Particles ───────────────────────────────────────────────────────
+function Particles() {
+  const ref = useRef<THREE.Points>(null)
+  const count = 1800
 
-  const positions = new Float32Array(particleCount * 3)
-  const colors = new Float32Array(particleCount * 3)
-
-  for (let i = 0; i < particleCount; i++) {
-    const radius = 5 + Math.random() * 10
-    const theta = Math.random() * Math.PI * 2
-    const phi = Math.random() * Math.PI
-
-    positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta)
-    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
-    positions[i * 3 + 2] = radius * Math.cos(phi)
-
-    const color = new THREE.Color()
-    const hue = 0.55 + Math.random() * 0.15
-    color.setHSL(hue, 1, 0.6)
-    colors[i * 3] = color.r
-    colors[i * 3 + 1] = color.g
-    colors[i * 3 + 2] = color.b
-  }
-
-  useFrame((state) => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y = state.clock.elapsedTime * 0.03
+  const [positions, colors] = (() => {
+    const pos = new Float32Array(count * 3)
+    const col = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      const r = 9 + Math.random() * 16
+      const theta = Math.random() * Math.PI * 2
+      const phi = Math.random() * Math.PI
+      pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta)
+      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
+      pos[i * 3 + 2] = r * Math.cos(phi)
+      const c = new THREE.Color().setHSL(0.52 + Math.random() * 0.14, 1, 0.5 + Math.random() * 0.25)
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b
     }
+    return [pos, col]
+  })()
+
+  useFrame((s) => {
+    if (ref.current) ref.current.rotation.y = s.clock.elapsedTime * 0.022
   })
 
   return (
-    <points ref={pointsRef}>
+    <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={particleCount} array={positions} itemSize={3} />
-        <bufferAttribute attach="attributes-color" count={particleCount} array={colors} itemSize={3} />
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color"    count={count} array={colors}    itemSize={3} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.03}
-        vertexColors
-        transparent
-        opacity={0.8}
-        sizeAttenuation
-        blending={THREE.AdditiveBlending}
+        size={0.045} vertexColors transparent opacity={0.7}
+        sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false}
       />
     </points>
   )
 }
 
-function LogoDisplay() {
+// ─── Grid ────────────────────────────────────────────────────────────────────
+function Grid() {
   return (
-    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
-      <group position={[0, 0, 0]}>
-        <mesh>
-          <ringGeometry args={[2.2, 2.4, 32]} />
-          <meshBasicMaterial color="#00d4ff" transparent opacity={0.6} />
-        </mesh>
-        <mesh position={[0, 0, 0.1]}>
-          <planeGeometry args={[3.5, 2.3]} />
-          <meshBasicMaterial color="#001122" transparent opacity={0.9} />
-        </mesh>
-        <mesh position={[0, 0, 0.05]}>
-          <planeGeometry args={[3.7, 2.5]} />
-          <meshBasicMaterial color="#00d4ff" transparent opacity={0.3} />
-        </mesh>
-      </group>
-    </Float>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -5, 0]}>
+      <planeGeometry args={[150, 150, 70, 70]} />
+      <meshBasicMaterial color="#003366" wireframe transparent opacity={0.1} />
+    </mesh>
   )
 }
 
-function GridEnvironment() {
-  return (
-    <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -6, 0]}>
-        <planeGeometry args={[100, 100, 50, 50]} />
-        <meshBasicMaterial color="#003366" wireframe transparent opacity={0.15} />
-      </mesh>
-      <mesh rotation={[0, 0, 0]} position={[0, 0, -25]}>
-        <planeGeometry args={[100, 50, 50, 25]} />
-        <meshBasicMaterial color="#001133" wireframe transparent opacity={0.1} />
-      </mesh>
-    </group>
-  )
-}
-
-export default function Preloader({ onEnter, isLoaded }: PreloaderProps) {
-  const [showButton, setShowButton] = useState(false)
-
-  useEffect(() => {
-    if (isLoaded) {
-      const timer = setTimeout(() => {
-        setShowButton(true)
-      }, 2500)
-      return () => clearTimeout(timer)
+// ─── Moving Drone Light ───────────────────────────────────────────────────────
+function DroneLight() {
+  const ref = useRef<THREE.PointLight>(null)
+  useFrame((s) => {
+    if (ref.current) {
+      const t = s.clock.elapsedTime
+      ref.current.position.set(Math.cos(t * 0.28) * 10, 7, Math.sin(t * 0.28) * 10)
     }
-  }, [isLoaded])
+  })
+  return <pointLight ref={ref} intensity={2.5} color="#00d4ff" distance={35} />
+}
 
+// ─── Logo Target Glow (3D plane behind logo) ──────────────────────────────────
+function LogoGlow() {
+  const ref = useRef<THREE.Mesh>(null)
+  useFrame((s) => {
+    if (ref.current) {
+      const t = s.clock.elapsedTime
+      ;(ref.current.material as THREE.MeshBasicMaterial).opacity =
+        0.08 + Math.sin(t * 1.4) * 0.04
+      ref.current.position.y = Math.sin(t * 0.7) * 0.06
+    }
+  })
+  return (
+    <mesh ref={ref} position={[0, 0, -0.1]}>
+      <planeGeometry args={[5, 3]} />
+      <meshBasicMaterial color="#00d4ff" transparent opacity={0.1} />
+    </mesh>
+  )
+}
+
+// ─── Main Preloader ───────────────────────────────────────────────────────────
+export default function Preloader({ onEnter, isLoaded }: PreloaderProps) {
+  const [zoomDone,      setZoomDone]      = useState(false)
+  const [fadeOut,       setFadeOut]       = useState(false)
+  const [logoOpacity,   setLogoOpacity]   = useState(0)
+  const [logoScale,     setLogoScale]     = useState(1)
+  const [flashOpacity,  setFlashOpacity]  = useState(0)
+  const [reticleGone,   setReticleGone]   = useState(false)
+
+  // Fade logo in gently on mount
   useEffect(() => {
-    const fallbackTimer = setTimeout(() => {
-      setShowButton(true)
-    }, 3000)
-    return () => clearTimeout(fallbackTimer)
+    const t = setTimeout(() => setLogoOpacity(1), 600)
+    return () => clearTimeout(t)
   }, [])
 
+  const handleZoomComplete = useCallback(() => {
+    setZoomDone(true)
+    setReticleGone(true)
+  }, [])
+
+  // Zoom complete → explode logo → white flash → exit
+  useEffect(() => {
+    if (!zoomDone) return
+
+    // 1. Scale logo up dramatically
+    setLogoScale(12)
+
+    // 2. Flash white
+    const t1 = setTimeout(() => setFlashOpacity(1), 200)
+
+    // 3. Fade the whole preloader out
+    const t2 = setTimeout(() => setFadeOut(true), 500)
+
+    // 4. Call parent
+    const t3 = setTimeout(() => onEnter(), 950)
+
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+  }, [zoomDone, onEnter])
+
+  // Hard fallback
+  useEffect(() => {
+    const t = setTimeout(onEnter, 15000)
+    return () => clearTimeout(t)
+  }, [onEnter])
+
   return (
-    <div className="fixed inset-0 bg-black z-50 overflow-hidden">
-      <Canvas camera={{ position: [12, 6, 12], fov: 60 }}>
+    <div
+      className="fixed inset-0 z-50 overflow-hidden"
+      style={{
+        background: "#000008",
+        opacity: fadeOut ? 0 : 1,
+        transition: "opacity 0.45s ease-in-out",
+      }}
+    >
+      {/* ── 3D Scene ── */}
+      <Canvas
+        camera={{ position: [20, 13, 20], fov: 52 }}
+        gl={{ antialias: true }}
+        style={{ position: "absolute", inset: 0 }}
+      >
         <Environment preset="night" />
-        <ambientLight intensity={0.1} />
-        <pointLight position={[10, 10, 10]} intensity={0.6} color="#00d4ff" />
-        <pointLight position={[-10, -10, -10]} intensity={0.4} color="#8000ff" />
-        <Stars radius={100} depth={40} count={500} factor={4} saturation={0} fade speed={1} />
-        <DroneCamera />
-        <ReactBitsParticles />
-        <LogoDisplay />
-        <GridEnvironment />
+        <ambientLight intensity={0.04} />
+        <DroneLight />
+        <pointLight position={[-14, 9, -9]} intensity={0.9} color="#5500cc" />
+        <pointLight position={[0,  0,  2]}  intensity={0.3} color="#00aaff" />
+        <Stars radius={130} depth={55} count={700} factor={5} saturation={0} fade speed={0.7} />
+        <CinematicCamera onZoomComplete={handleZoomComplete} />
+        <Particles />
+        <LogoGlow />
+        <Grid />
       </Canvas>
 
-      {/* Logo */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-        <StickerPeel className="w-64 h-40">
-          <Image src="/images/cygnuz-logo.png" alt="Cygnuz AI" width={256} height={160} className="object-contain" />
-        </StickerPeel>
+      {/* ── Scanlines ── */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,212,255,0.012) 3px,rgba(0,212,255,0.012) 4px)",
+          zIndex: 3,
+        }}
+      />
+
+      {/* ── Logo (HTML overlay, centered) ── */}
+      <div
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        style={{ zIndex: 12 }}
+      >
+        <div
+          style={{
+            opacity: logoOpacity,
+            transform: `scale(${logoScale})`,
+            transition: zoomDone
+              ? "opacity 0.25s ease-in, transform 0.65s cubic-bezier(0.165, 0.84, 0.44, 1)"
+              : "opacity 1.4s cubic-bezier(0.22,1,0.36,1)",
+            willChange: "transform, opacity",
+            filter: zoomDone ? "brightness(2) saturate(0)" : "drop-shadow(0 0 20px rgba(0,212,255,0.35))",
+          }}
+        >
+          <Image
+            src="/images/cygnuz-logo.png"
+            alt="Cygnuz AI"
+            width={290}
+            height={180}
+            className="object-contain"
+            priority
+          />
+        </div>
       </div>
 
-      {/* Rotating text */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-5">
-        <RotatingText
-          text="• AI AUTOMATION • INTELLIGENT SYSTEMS • FUTURE TECH • "
-          radius={150}
-          className="text-cyan-400 text-sm font-light opacity-60"
-        />
-      </div>
-
-      {/* Loading bar */}
-      {!showButton && (
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
-          <div className="flex items-center justify-center space-x-1 mb-4">
-            {[...Array(5)].map((_, i) => (
+      {/* ── Targeting Reticle ── */}
+      {!reticleGone && (
+        <div
+          className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          style={{ zIndex: 11 }}
+        >
+          <div style={{ animation: "reticle 11s cubic-bezier(0.4,0,0.2,1) forwards" }}>
+            {/* Outer slow ring */}
+            <div
+              className="absolute rounded-full border border-cyan-500/25"
+              style={{ inset: -80, animation: "spin 12s linear infinite" }}
+            />
+            {/* Mid ring */}
+            <div
+              className="absolute rounded-full border border-cyan-400/40"
+              style={{ inset: -48, animation: "spin 7s linear infinite reverse" }}
+            />
+            {/* Inner ring */}
+            <div
+              className="absolute rounded-full border-2 border-cyan-400/60"
+              style={{ inset: -24, animation: "spin 3s linear infinite" }}
+            />
+            {/* Cross hairs */}
+            <div className="absolute" style={{ inset: -70 }}>
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent" />
+            </div>
+            {/* Corner brackets */}
+            {[
+              "top-0 left-0 border-t border-l",
+              "top-0 right-0 border-t border-r",
+              "bottom-0 left-0 border-b border-l",
+              "bottom-0 right-0 border-b border-r",
+            ].map((cls, i) => (
               <div
                 key={i}
-                className="w-1 h-8 bg-gradient-to-t from-cyan-400 to-blue-500 rounded-full animate-pulse"
-                style={{ animationDelay: `${i * 0.1}s`, animationDuration: "1s" }}
+                className={`absolute w-4 h-4 border-cyan-400 ${cls}`}
+                style={{ margin: -28 }}
+              />
+            ))}
+            {/* Center pip */}
+            <div className="relative w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_12px_4px_rgba(0,212,255,0.7)]" />
+          </div>
+        </div>
+      )}
+
+      {/* ── HUD corners ── */}
+      {["top-5 left-5 border-l-2 border-t-2", "top-5 right-5 border-r-2 border-t-2",
+        "bottom-5 left-5 border-l-2 border-b-2", "bottom-5 right-5 border-r-2 border-b-2"].map((cls, i) => (
+        <div key={i} className={`absolute w-7 h-7 border-cyan-500/50 ${cls}`} style={{ zIndex: 15 }} />
+      ))}
+
+      {/* ── Status bar ── */}
+      {!zoomDone && (
+        <div
+          className="pointer-events-none absolute bottom-8 left-0 right-0 flex flex-col items-center gap-3"
+          style={{ zIndex: 15 }}
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
+            </span>
+            <p className="text-cyan-400/75 text-xs tracking-[0.35em] font-mono uppercase select-none">
+              Acquiring Target
+            </p>
+          </div>
+          <div className="flex items-end gap-0.5">
+            {[4,7,5,9,6,8,4,7,5,6].map((h, i) => (
+              <div
+                key={i}
+                className="w-0.5 rounded-sm bg-cyan-400/50"
+                style={{
+                  height: h * 2,
+                  animation: `waveBar 1.1s ease-in-out ${i * 0.09}s infinite alternate`,
+                }}
               />
             ))}
           </div>
-          <p className="text-cyan-400 text-sm font-light tracking-wider">INITIALIZING AI SYSTEMS</p>
-          <div className="mt-2 w-32 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent mx-auto" />
         </div>
       )}
 
-      {/* Skip button */}
-      {!showButton && isLoaded && (
-        <div className="absolute top-8 right-8 z-20">
-          <button
-            onClick={() => setShowButton(true)}
-            className="text-cyan-400 text-sm hover:text-cyan-300 transition-colors border border-cyan-400/30 px-4 py-2 rounded-full backdrop-blur-sm"
-          >
-            Skip Animation
-          </button>
-        </div>
-      )}
+      {/* ── White flash on transition ── */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-white"
+        style={{
+          opacity: flashOpacity,
+          transition: "opacity 0.35s ease-out",
+          zIndex: 30,
+        }}
+      />
 
-      {/* Enter button */}
-      {showButton && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
-          <div className="text-center pointer-events-auto relative">
-            <div className="absolute -inset-8 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl blur-xl animate-pulse" />
-            <div className="relative bg-black/80 backdrop-blur-sm border-2 border-cyan-400/50 rounded-xl p-8">
-              <h1 className="text-3xl font-bold text-cyan-400 mb-3 tracking-wider animate-pulse">SYSTEM READY</h1>
-              <p className="text-gray-300 mb-6 text-base">Enter the AI Universe</p>
-              <button
-                onClick={onEnter}
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-10 py-4 rounded-full text-lg font-bold shadow-2xl hover:shadow-cyan-500/50 hover:scale-110 transition-all duration-300 border-2 border-cyan-400/70 animate-bounce"
-              >
-                ENTER EXPERIENCE
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Corners */}
-      <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-cyan-400/50" />
-      <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-cyan-400/50" />
-      <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-cyan-400/50" />
-      <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-cyan-400/50" />
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        @keyframes reticle {
+          0%   { transform: scale(3);   opacity: 0;   }
+          10%  { opacity: 1; }
+          70%  { transform: scale(0.9); opacity: 1;   }
+          90%  { transform: scale(0.5); opacity: 0.6; }
+          100% { transform: scale(0.1); opacity: 0;   }
+        }
+        @keyframes waveBar {
+          from { transform: scaleY(0.4); opacity: 0.4; }
+          to   { transform: scaleY(1.6); opacity: 1;   }
+        }
+      `}</style>
     </div>
   )
 }
