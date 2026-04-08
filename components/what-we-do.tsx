@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Bot, Phone, Workflow, Cpu } from "lucide-react"
 
 const services = [
@@ -10,37 +9,213 @@ const services = [
     title: "AI Chatbots",
     description: "Intelligent conversational agents that provide 24/7 customer support and engagement.",
     features: ["Natural Language Processing", "Multi-platform Integration", "Learning Capabilities"],
-    gradient: "from-cyan-500 to-blue-600",
-    accent: "#00d4ff",
+    color: "#00d4ff",
+    dimColor: "rgba(0,212,255,0.08)",
+    borderColor: "rgba(0,212,255,0.25)",
+    label: "01",
   },
   {
     icon: Phone,
-    title: "Automated Calling Agents",
+    title: "Automated Calling",
     description: "Voice AI systems that handle calls, appointments, and customer interactions seamlessly.",
     features: ["Voice Recognition", "Appointment Scheduling", "Call Analytics"],
-    gradient: "from-blue-500 to-purple-600",
-    accent: "#4f46e5",
+    color: "#a78bfa",
+    dimColor: "rgba(167,139,250,0.08)",
+    borderColor: "rgba(167,139,250,0.25)",
+    label: "02",
   },
   {
     icon: Workflow,
-    title: "Workflow Optimization",
-    description: "Streamline business processes with intelligent automation and decision-making systems.",
+    title: "Workflow Automation",
+    description: "Streamline business processes with intelligent automation and smart decision-making.",
     features: ["Process Automation", "Data Analysis", "Performance Metrics"],
-    gradient: "from-purple-500 to-pink-600",
-    accent: "#8b5cf6",
+    color: "#34d399",
+    dimColor: "rgba(52,211,153,0.08)",
+    borderColor: "rgba(52,211,153,0.25)",
+    label: "03",
   },
   {
     icon: Cpu,
     title: "Custom AI Solutions",
-    description: "Tailored artificial intelligence solutions designed specifically for your business needs.",
+    description: "Tailored artificial intelligence engineered specifically around your business needs.",
     features: ["Custom Development", "Integration Support", "Ongoing Maintenance"],
-    gradient: "from-pink-500 to-cyan-600",
-    accent: "#ec4899",
+    color: "#f472b6",
+    dimColor: "rgba(244,114,182,0.08)",
+    borderColor: "rgba(244,114,182,0.25)",
+    label: "04",
   },
 ]
 
+function ServiceCard({
+  service,
+  index,
+  visible,
+}: {
+  service: (typeof services)[0]
+  index: number
+  visible: boolean
+}) {
+  const Icon = service.icon
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <div
+      className="relative group cursor-default"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0px)" : "translateY(40px)",
+        transition: `opacity 0.7s cubic-bezier(0.22,1,0.36,1) ${index * 120}ms, transform 0.7s cubic-bezier(0.22,1,0.36,1) ${index * 120}ms`,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Card body */}
+      <div
+        className="relative overflow-hidden h-full"
+        style={{
+          background: hovered ? service.dimColor : "rgba(8,10,20,0.85)",
+          border: `1px solid ${hovered ? service.borderColor : "rgba(255,255,255,0.06)"}`,
+          borderRadius: 2,
+          transition: "background 0.4s ease, border-color 0.4s ease",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        {/* Top accent bar */}
+        <div
+          style={{
+            height: 2,
+            background: `linear-gradient(90deg, transparent, ${service.color}, transparent)`,
+            opacity: hovered ? 1 : 0.3,
+            transition: "opacity 0.4s ease",
+          }}
+        />
+
+        {/* Number watermark */}
+        <div
+          className="absolute top-4 right-4 font-mono text-5xl font-black select-none pointer-events-none"
+          style={{
+            color: service.color,
+            opacity: hovered ? 0.12 : 0.05,
+            transition: "opacity 0.4s ease",
+            lineHeight: 1,
+            letterSpacing: "-0.05em",
+          }}
+        >
+          {service.label}
+        </div>
+
+        <div className="p-7 flex flex-col gap-5">
+          {/* Icon + label row */}
+          <div className="flex items-start justify-between">
+            <div
+              className="flex items-center justify-center"
+              style={{
+                width: 48,
+                height: 48,
+                border: `1px solid ${service.borderColor}`,
+                borderRadius: 2,
+                background: service.dimColor,
+                transition: "all 0.3s ease",
+                boxShadow: hovered ? `0 0 20px ${service.color}33` : "none",
+              }}
+            >
+              <Icon
+                style={{
+                  width: 22,
+                  height: 22,
+                  color: service.color,
+                  transition: "transform 0.3s ease",
+                  transform: hovered ? "scale(1.15)" : "scale(1)",
+                }}
+              />
+            </div>
+            <span
+              className="font-mono text-xs tracking-widest"
+              style={{ color: service.color, opacity: 0.7 }}
+            >
+              {service.label}
+            </span>
+          </div>
+
+          {/* Title */}
+          <div>
+            <h3
+              className="font-bold text-xl tracking-tight mb-2"
+              style={{
+                color: hovered ? "#ffffff" : "#e2e8f0",
+                fontFamily: "'Syne', sans-serif",
+                transition: "color 0.3s ease",
+              }}
+            >
+              {service.title}
+            </h3>
+            <p
+              className="text-sm leading-relaxed"
+              style={{ color: "#64748b", fontFamily: "'DM Sans', sans-serif" }}
+            >
+              {service.description}
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div
+            style={{
+              height: 1,
+              background: `linear-gradient(90deg, ${service.color}40, transparent)`,
+              opacity: hovered ? 1 : 0.4,
+              transition: "opacity 0.4s ease",
+            }}
+          />
+
+          {/* Features */}
+          <ul className="flex flex-col gap-2">
+            {service.features.map((f, i) => (
+              <li key={i} className="flex items-center gap-2.5">
+                <div
+                  style={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: "50%",
+                    background: service.color,
+                    flexShrink: 0,
+                    boxShadow: `0 0 6px ${service.color}`,
+                  }}
+                />
+                <span
+                  className="text-xs tracking-wide"
+                  style={{
+                    color: hovered ? "#94a3b8" : "#475569",
+                    fontFamily: "'DM Mono', monospace",
+                    transition: "color 0.3s ease",
+                  }}
+                >
+                  {f}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Bottom-right corner accent */}
+        <div
+          className="absolute bottom-0 right-0"
+          style={{
+            width: 40,
+            height: 40,
+            borderTop: `1px solid ${service.borderColor}`,
+            borderLeft: `1px solid ${service.borderColor}`,
+            opacity: hovered ? 0.8 : 0.2,
+            transition: "opacity 0.4s ease",
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
 export default function WhatWeDo() {
   const [visibleCards, setVisibleCards] = useState<number[]>([])
+  const [headerVisible, setHeaderVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -48,112 +223,181 @@ export default function WhatWeDo() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            services.forEach((_, index) => {
-              setTimeout(() => {
-                setVisibleCards((prev) => [...prev, index])
-              }, index * 150)
+            setHeaderVisible(true)
+            services.forEach((_, i) => {
+              setTimeout(() => setVisibleCards((prev) => [...prev, i]), 200 + i * 130)
             })
           }
         })
       },
-      { threshold: 0.2 },
+      { threshold: 0.15 }
     )
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
+    if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [])
 
   return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="py-16 px-6 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden"
-    >
-      {/* ReactBits background pattern */}
-      <div className="absolute inset-0 opacity-5">
+    <>
+      {/* Google Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400&family=DM+Mono:wght@400;500&display=swap');
+
+        @keyframes scanline {
+          0%   { transform: translateY(-100%); }
+          100% { transform: translateY(100vh); }
+        }
+        @keyframes gridPulse {
+          0%, 100% { opacity: 0.03; }
+          50%       { opacity: 0.06; }
+        }
+        @keyframes floatDot {
+          0%, 100% { transform: translateY(0px) scale(1);   opacity: 0.6; }
+          50%       { transform: translateY(-8px) scale(1.3); opacity: 1;   }
+        }
+      `}</style>
+
+      <section
+        id="about"
+        ref={sectionRef}
+        className="relative py-24 px-6 overflow-hidden"
+        style={{ background: "linear-gradient(180deg, #000008 0%, #05080f 50%, #000008 100%)" }}
+      >
+        {/* Dot-grid background */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: `
-            radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 75% 75%, rgba(128, 0, 255, 0.1) 0%, transparent 50%)
-          `,
+            backgroundImage: "radial-gradient(circle, rgba(0,212,255,0.12) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+            animation: "gridPulse 6s ease-in-out infinite",
           }}
         />
-      </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center mb-12">
-          <div className="relative inline-block">
-            <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur-lg" />
-            <h2 className="relative text-3xl md:text-4xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                What We Do
-              </span>
-            </h2>
-          </div>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            We specialize in creating cutting-edge AI solutions that transform how businesses operate, communicate, and
-            grow in the digital age.
-          </p>
-        </div>
+        {/* Scanline sweep */}
+        <div
+          className="absolute inset-x-0 pointer-events-none"
+          style={{
+            height: "2px",
+            background: "linear-gradient(90deg, transparent, rgba(0,212,255,0.15), transparent)",
+            animation: "scanline 8s linear infinite",
+            top: 0,
+          }}
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, index) => {
-            const Icon = service.icon
-            const isVisible = visibleCards.includes(index)
+        {/* Ambient glows */}
+        <div className="absolute pointer-events-none" style={{ top: "10%", left: "5%",  width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,212,255,0.05) 0%, transparent 70%)" }} />
+        <div className="absolute pointer-events-none" style={{ bottom: "10%", right: "5%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 70%)" }} />
 
-            return (
-              <Card
-                key={index}
-                className={`relative bg-gray-900/50 backdrop-blur-sm border-gray-700 hover:border-cyan-400/50 transition-all duration-500 hover:scale-105 group overflow-hidden ${
-                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
+        <div className="relative max-w-7xl mx-auto z-10">
+
+          {/* ── Header ── */}
+          <div
+            className="mb-16"
+            style={{
+              opacity: headerVisible ? 1 : 0,
+              transform: headerVisible ? "translateY(0)" : "translateY(24px)",
+              transition: "opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1)",
+            }}
+          >
+            {/* Eyebrow */}
+            <div className="flex items-center gap-3 mb-5">
+              <div style={{ width: 32, height: 1, background: "#00d4ff" }} />
+              <span
+                className="text-xs tracking-[0.3em] uppercase"
+                style={{ color: "#00d4ff", fontFamily: "'DM Mono', monospace" }}
               >
-                {/* ReactBits glow effect */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+                Services
+              </span>
+            </div>
 
-                {/* Corner accents */}
-                <div className="absolute top-2 left-2 w-4 h-4 border-l border-t border-cyan-400/30" />
-                <div className="absolute top-2 right-2 w-4 h-4 border-r border-t border-cyan-400/30" />
-                <div className="absolute bottom-2 left-2 w-4 h-4 border-l border-b border-cyan-400/30" />
-                <div className="absolute bottom-2 right-2 w-4 h-4 border-r border-b border-cyan-400/30" />
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+              <h2
+                className="text-4xl md:text-6xl font-black leading-none tracking-tight"
+                style={{ fontFamily: "'Syne', sans-serif", color: "#f8fafc" }}
+              >
+                What{" "}
+                <span
+                  style={{
+                    WebkitTextStroke: "1px rgba(0,212,255,0.6)",
+                    color: "transparent",
+                  }}
+                >
+                  We
+                </span>{" "}
+                Do
+              </h2>
 
-                <CardContent className="p-6 relative z-10">
-                  <div className="mb-4">
-                    <div className="relative mb-4">
-                      <div
-                        className={`w-12 h-12 bg-gradient-to-r ${service.gradient} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
-                      >
-                        <Icon className="h-6 w-6 text-white" />
-                      </div>
-                      <div
-                        className="absolute -inset-1 rounded-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300 blur-sm"
-                        style={{ backgroundColor: service.accent }}
-                      />
-                    </div>
-                    <h3 className="text-lg font-bold text-white mb-2">{service.title}</h3>
-                    <p className="text-gray-300 mb-4 text-sm">{service.description}</p>
-                  </div>
+              <p
+                className="text-sm leading-relaxed max-w-sm"
+                style={{ color: "#475569", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                Cutting-edge AI solutions that transform how businesses operate, communicate, and grow in the digital age.
+              </p>
+            </div>
 
-                  <ul className="space-y-1.5">
-                    {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="text-xs text-cyan-400 flex items-center">
-                        <div className="w-1 h-1 bg-cyan-400 rounded-full mr-2"></div>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            )
-          })}
+            {/* Full-width rule */}
+            <div
+              className="mt-8"
+              style={{
+                height: 1,
+                background: "linear-gradient(90deg, rgba(0,212,255,0.4), rgba(167,139,250,0.3), transparent)",
+              }}
+            />
+          </div>
+
+          {/* ── Cards grid ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px"
+            style={{ background: "rgba(255,255,255,0.04)", borderRadius: 2 }}
+          >
+            {services.map((service, index) => (
+              <ServiceCard
+                key={index}
+                service={service}
+                index={index}
+                visible={visibleCards.includes(index)}
+              />
+            ))}
+          </div>
+
+          {/* ── Bottom status row ── */}
+          <div
+            className="mt-10 flex items-center justify-between"
+            style={{
+              opacity: headerVisible ? 1 : 0,
+              transition: "opacity 1s ease 0.6s",
+            }}
+          >
+            <div className="flex items-center gap-6">
+              {["AI-Powered", "Enterprise Ready", "24/7 Active"].map((tag, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <div
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: ["#00d4ff", "#a78bfa", "#34d399"][i],
+                      boxShadow: `0 0 8px ${["#00d4ff", "#a78bfa", "#34d399"][i]}`,
+                      animation: `floatDot 2.5s ease-in-out ${i * 0.4}s infinite`,
+                    }}
+                  />
+                  <span
+                    className="text-xs tracking-widest uppercase"
+                    style={{ color: "#334155", fontFamily: "'DM Mono', monospace" }}
+                  >
+                    {tag}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <span
+              className="text-xs tracking-widest"
+              style={{ color: "#1e293b", fontFamily: "'DM Mono', monospace" }}
+            >
+              CYGNUZ.AI / 2025
+            </span>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }
