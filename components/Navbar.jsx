@@ -16,8 +16,8 @@ const Navbar = () => {
   return (
     <header className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/60">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex justify-between items-center">
-        <div className="w-44 font-bold text-white tracking-tight">
-          <img src='/images/cygnuz-logo.png' className="w-full h-auto max-h-16 object-contain" />
+        <div className="w-52 font-bold text-white tracking-tight">
+          <img src='/images/cygnuz-logo.png' className="w-full h-auto max-h-20 object-contain" />
         </div>
 
         {/* Desktop Menu */}
