@@ -331,7 +331,7 @@ export default function AIAgentDemo() {
     <section
       ref={sectionRef}
       style={{
-        padding: "2.5rem 1.5rem",
+        padding: "2.5rem 1rem",
         background: "#0a0e1a",
         fontFamily: "Inter, sans-serif",
       }}
@@ -353,8 +353,17 @@ export default function AIAgentDemo() {
         .ai-send-btn:hover { background: #378ADD !important; }
         .ai-restart-btn:hover { border-color: #378ADD !important; color: #85B7EB !important; }
         .ai-cta-btn:hover { background: #378ADD !important; }
+        .ai-demo-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+          align-items: start;
+        }
         @media (max-width: 700px) {
-          .ai-demo-grid { grid-template-columns: 1fr !important; }
+          .ai-demo-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          .ai-section-padding { padding: 2rem 1rem !important; }
+          .ai-header-title { font-size: 22px !important; }
+          .ai-header-desc { font-size: 13px !important; }
         }
       `}</style>
 
@@ -388,24 +397,16 @@ export default function AIAgentDemo() {
           Live preview
         </div>
 
-        <h2 style={{ fontSize: 26, fontWeight: 500, color: "#f0f4ff", marginBottom: "0.4rem" }}>
+        <h2 className="ai-header-title" style={{ fontSize: 26, fontWeight: 500, color: "#f0f4ff", marginBottom: "0.4rem" }}>
           AI agent in action
         </h2>
-        <p style={{ fontSize: 14, color: "#6b7fa8", lineHeight: 1.6, maxWidth: 460 }}>
+        <p className="ai-header-desc" style={{ fontSize: 14, color: "#6b7fa8", lineHeight: 1.6, maxWidth: 460 }}>
           Watch how our agents handle real conversations and automate complex workflows — no setup required.
         </p>
       </div>
 
       {/* ── Grid ── */}
-      <div
-        className="ai-demo-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "2rem",
-          alignItems: "start",
-        }}
-      >
+      <div className="ai-demo-grid">
         {/* ── Chat card ── */}
         <div>
           <div

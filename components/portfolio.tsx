@@ -1,38 +1,41 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { useState, useRef } from "react"
+import { useState } from "react"
 import Image from "next/image"
 
 const logos = [
-  { name: "Engro", image: "/cygnuz/engro.png" },
-  { name: "Ehive", image: "/cygnuz/ehive.png" },
+  { name: "Engro",    image: "/cygnuz/engro.png"    },
+  { name: "Ehive",    image: "/cygnuz/ehive.png"    },
   { name: "PalmCare", image: "/cygnuz/palmcare.webp" },
-  { name: "Suhaib", image: "/cygnuz/suhaib.png" },
-  { name: "Legerium", image: "/cygnuz/logo_bg.png" },
+  { name: "Suhaib",   image: "/cygnuz/suhaib.png"   },
+  { name: "Legerium", image: "/cygnuz/logo_bg.png"  },
 ]
 
 const secondRowLogos = [
-  { name: "Ecosaathi", image: "/cygnuz/ecosaathi.png" },
-  { name: "UrEwaste", image: "/cygnuz/urewaste.png" },
-  { name: "Terminix", image: "/cygnuz/terminix.png" },
-  { name: "Infinitely Digital", image: "/cygnuz/infinitely.png" },
+  { name: "Ecosaathi",        image: "/cygnuz/ecosaathi.png"  },
+  { name: "UrEwaste",         image: "/cygnuz/urewaste.png"   },
+  { name: "Terminix",         image: "/cygnuz/terminix.png"   },
+  { name: "Infinitely Digital",image: "/cygnuz/infinitely.png"},
 ]
 
-function LogoCard({ logo, onEnter, onLeave }: { logo: { name: string; image: string }; onEnter: () => void; onLeave: () => void }) {
+function LogoCard({
+  logo,
+  onEnter,
+  onLeave,
+}: {
+  logo: { name: string; image: string }
+  onEnter: () => void
+  onLeave: () => void
+}) {
   return (
-    <div
-      className="flex-shrink-0 mx-2"
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-    >
-      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center justify-center transition-colors hover:border-white/20">
+    <div className="flex-shrink-0 mx-2" onMouseEnter={onEnter} onMouseLeave={onLeave}>
+      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-center justify-center transition-colors hover:border-slate-700 hover:bg-slate-900">
         <div className="relative w-16 h-8 sm:w-20 sm:h-10">
           <Image
             src={logo.image}
             alt={logo.name}
             fill
-            className="object-contain opacity-85"
+            className="object-contain opacity-70 hover:opacity-90 transition-opacity"
             sizes="80px"
           />
         </div>
@@ -80,21 +83,38 @@ function MarqueeRow({
 
 export function Portfolio() {
   return (
-    <section className="text-white py-16 sm:py-20 overflow-hidden">
-      <div className="container mx-auto px-4">
+    <section id="projects" className="bg-slate-950 py-16 sm:py-24 overflow-hidden">
+      <div className="absolute left-0 right-0 h-px bg-slate-800" />
+
+      <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
-        <div className="flex flex-col items-center justify-between mb-12 sm:flex-row sm:items-center">
-          <h2 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl text-center sm:text-left leading-tight">
-            Meet our <span className="text-lime-300">top-tier</span>
-            <br />
-            customers
-          </h2>
-    
+        <div className="mb-14">
+          <span className="mb-3 inline-block text-xs font-medium uppercase tracking-widest text-slate-500">
+            Our Clients
+          </span>
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <h2 className="text-3xl font-semibold tracking-tight text-slate-100 md:text-4xl">
+              Trusted by great teams
+            </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-slate-500">
+              Businesses across industries rely on Cygnuz AI to automate, scale, and grow.
+            </p>
+          </div>
         </div>
 
-        {/* Marquee Rows */}
-        <MarqueeRow items={logos} direction="right" duration="18s" />
-        <MarqueeRow items={secondRowLogos} direction="left" duration="22s" />
+        {/* Marquee rows */}
+        <MarqueeRow items={logos}            direction="right" duration="18s" />
+        <MarqueeRow items={secondRowLogos}   direction="left"  duration="22s" />
+
+        {/* Bottom tags */}
+        <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-slate-800 pt-8">
+          {["AI-powered", "Enterprise ready", "Karachi & global"].map((tag) => (
+            <div key={tag} className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span className="text-xs uppercase tracking-wider text-slate-500">{tag}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

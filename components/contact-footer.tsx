@@ -7,8 +7,7 @@ import { Canvas, useFrame } from "@react-three/fiber"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent } from "@/components/ui/card"
-import { Mail, Phone, MapPin, Send, Linkedin, Twitter, Instagram } from "lucide-react"
+import { Mail, Phone, MapPin, Send, Linkedin, Instagram } from "lucide-react"
 import Image from "next/image"
 import emailjs from "@emailjs/browser"
 
@@ -119,139 +118,122 @@ export default function ContactFooter() {
   ]
 
   return (
-    <section className="relative py-16 px-6 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-      <Canvas className="absolute inset-0">
+    <section className="relative py-16 px-6 bg-slate-900 overflow-hidden">
+      <Canvas className="absolute inset-0 opacity-30">
         <ReactBitsContactParticles />
       </Canvas>
 
-      {/* Background grid */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
+      {/* Top divider */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-slate-800" />
 
-      <div id="contact" className="relative z-10 max-w-7xl mx-auto">
+      <div id="contact" className="relative z-10 max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="relative inline-block">
-            <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur-lg" />
-            <h2 className="relative text-3xl md:text-4xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                Ready to Transform Your Business?
-              </span>
+        <div className="mb-14">
+          <span className="mb-3 inline-block text-xs font-medium uppercase tracking-widest text-slate-500">
+            Get In Touch
+          </span>
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <h2 className="text-3xl font-semibold tracking-tight text-slate-100 md:text-4xl">
+              Ready to transform your business?
             </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-slate-500">
+              Let's build the AI solution that fits your exact needs — from first call to full deployment.
+            </p>
           </div>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Let's discuss how our AI automation solutions can revolutionize your operations and drive growth.
-          </p>
         </div>
 
         {/* Form + Info Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           {/* Contact Form */}
-          <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-lg blur-sm" />
-            <Card className="relative bg-gray-800/80 backdrop-blur-sm border-gray-700">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4">Get In Touch</h3>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Input name="name" placeholder="Your Name" value={formData.name} onChange={handleChange} className="bg-gray-700/70 border-gray-600 text-white placeholder-gray-400 text-sm h-10 backdrop-blur-sm" required />
-                    <Input name="email" type="email" placeholder="Your Email" value={formData.email} onChange={handleChange} className="bg-gray-700/70 border-gray-600 text-white placeholder-gray-400 text-sm h-10 backdrop-blur-sm" required />
-                  </div>
-                  <Input name="company" placeholder="Company Name" value={formData.company} onChange={handleChange} className="bg-gray-700/70 border-gray-600 text-white placeholder-gray-400 text-sm h-10 backdrop-blur-sm" />
-                  <Textarea name="message" placeholder="Tell us about your project..." value={formData.message} onChange={handleChange} rows={3} className="bg-gray-700/70 border-gray-600 text-white placeholder-gray-400 text-sm backdrop-blur-sm" required />
-                  <Button type="submit" className="w-full relative bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white py-2.5 rounded-lg font-medium border border-cyan-400/50">
-                    <span className="relative z-10 flex items-center justify-center">
-                      Lets Take It To Next Level !<Send className="ml-2 h-4 w-4" />
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-400/20 rounded-lg blur-sm" />
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+            <h3 className="text-base font-semibold text-slate-100 mb-5">Send us a message</h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Input name="name" placeholder="Your Name" value={formData.name} onChange={handleChange}
+                  className="bg-slate-800/60 border-slate-700 text-slate-200 placeholder:text-slate-600 text-sm h-10 focus:border-slate-500 focus:ring-0" required />
+                <Input name="email" type="email" placeholder="Your Email" value={formData.email} onChange={handleChange}
+                  className="bg-slate-800/60 border-slate-700 text-slate-200 placeholder:text-slate-600 text-sm h-10 focus:border-slate-500 focus:ring-0" required />
+              </div>
+              <Input name="company" placeholder="Company Name" value={formData.company} onChange={handleChange}
+                className="bg-slate-800/60 border-slate-700 text-slate-200 placeholder:text-slate-600 text-sm h-10 focus:border-slate-500 focus:ring-0" />
+              <Textarea name="message" placeholder="Tell us about your project..." value={formData.message} onChange={handleChange}
+                rows={4} className="bg-slate-800/60 border-slate-700 text-slate-200 placeholder:text-slate-600 text-sm focus:border-slate-500 focus:ring-0" required />
+              <Button type="submit"
+                className="w-full bg-slate-100 hover:bg-white text-slate-900 font-semibold text-sm py-2.5 rounded-xl border-0 transition-all duration-200">
+                <span className="flex items-center justify-center gap-2">
+                  Let's Take It to the Next Level
+                  <Send className="h-4 w-4" />
+                </span>
+              </Button>
+            </form>
           </div>
 
           {/* Info Cards */}
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Contact Info */}
-            <div className="relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg blur-sm" />
-              <div className="relative bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-lg p-5">
-                <h3 className="text-lg font-bold text-white mb-3">Contact Information</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <Mail className="h-4 w-4 text-cyan-400 mr-3" />
-                    <span className="text-gray-300 text-sm">cygnuzai@gmail.com</span>
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5">
+              <h3 className="text-sm font-semibold text-slate-100 mb-4">Contact Information</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-400">
+                    <Mail className="h-4 w-4" strokeWidth={1.75} />
                   </div>
-                  <div className="flex items-center">
-                    <MapPin className="h-4 w-4 text-cyan-400 mr-3" />
-                    <span className="text-gray-300 text-sm">Karachi, Pakistan</span>
+                  <span className="text-slate-400 text-sm">cygnuzai@gmail.com</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-400">
+                    <MapPin className="h-4 w-4" strokeWidth={1.75} />
                   </div>
+                  <span className="text-slate-400 text-sm">Karachi, Pakistan</span>
                 </div>
               </div>
             </div>
 
             {/* Why Choose Us */}
-            <div className="relative">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg blur-sm" />
-              <div className="relative bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-lg p-5">
-                <h3 className="text-lg font-bold text-white mb-3">Why Choose Cygnuz AI?</h3>
-                <ul className="space-y-2 text-gray-300 text-sm">
-                  {[
-                    "Cutting-edge AI technology",
-                    "Custom solutions for your business",
-                    "24/7 support and maintenance",
-                    "Proven track record of success",
-                  ].map((point, i) => (
-                    <li key={i} className="flex items-center">
-                      <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-3"></div>
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5">
+              <h3 className="text-sm font-semibold text-slate-100 mb-4">Why Cygnuz AI?</h3>
+              <ul className="space-y-2.5">
+                {[
+                  "Custom AI built around your business",
+                  "Flagship 24/7 AI Call Agent",
+                  "End-to-end workflow automation",
+                  "Proven track record of results",
+                ].map((point, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm text-slate-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="border-t border-gray-700 pt-8 relative">
-          <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <footer className="border-t border-slate-800 pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {/* Logo */}
-            <div className="relative">
-              <Image src="/images/cygnuz-logo.png" alt="Cygnuz AI" width={150} height={75} className="mb-3" />
-              <p className="text-gray-400 text-sm">
-                Advanced AI automation agency building intelligent systems that optimize workflows and revolutionize
-                business operations.
+            <div>
+              <Image src="/images/cygnuz-logo.png" alt="Cygnuz AI" width={130} height={65} className="mb-3 opacity-90" />
+              <p className="text-slate-500 text-sm leading-relaxed">
+                AI & custom software agency building intelligent systems that automate, scale, and grow businesses.
               </p>
             </div>
 
             {/* Services */}
             <div>
-              <h4 className="font-bold text-white mb-3">Services</h4>
-              <ul className="space-y-1.5 text-gray-400 text-sm">
-                <li className="hover:text-cyan-400 transition-colors cursor-pointer">AI Chatbots</li>
-                <li className="hover:text-cyan-400 transition-colors cursor-pointer">Automated Calling Agents</li>
-                <li className="hover:text-cyan-400 transition-colors cursor-pointer">Workflow Optimization</li>
-                <li className="hover:text-cyan-400 transition-colors cursor-pointer">Custom AI Solutions</li>
+              <h4 className="text-xs font-medium uppercase tracking-widest text-slate-500 mb-4">Services</h4>
+              <ul className="space-y-2 text-sm text-slate-400">
+                {["AI & Custom Software", "AI Call Agents", "Workflow Automation", "AI Chatbots"].map(s => (
+                  <li key={s} className="hover:text-slate-200 transition-colors cursor-pointer">{s}</li>
+                ))}
               </ul>
             </div>
 
             {/* Social Icons */}
             <div>
-              <h4 className="font-bold text-white mb-3">Connect</h4>
-              <div className="flex space-x-3">
+              <h4 className="text-xs font-medium uppercase tracking-widest text-slate-500 mb-4">Connect</h4>
+              <div className="flex gap-3">
                 {socials.map(({ icon: Icon, label, href }, index) => (
                   <a
                     key={index}
@@ -259,30 +241,22 @@ export default function ContactFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="relative border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black bg-transparent h-8 w-8 p-0 rounded flex items-center justify-center backdrop-blur-sm transition-colors"
+                    className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-700 bg-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200 transition-all duration-200"
                   >
                     <Icon className="h-4 w-4" />
-                    <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded blur-sm opacity-0 hover:opacity-100 transition-opacity" />
                   </a>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="border-t border-gray-700 pt-6 text-center relative">
-            <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
-            <p className="text-gray-400 text-sm">
-              © 2024 Cygnuz AI. All rights reserved. | Reimagining Business Through AI Automation
+          <div className="border-t border-slate-800 pt-6 text-center">
+            <p className="text-slate-600 text-xs">
+              © {new Date().getFullYear()} Cygnuz AI. All rights reserved. — Reimagining Business Through AI Automation
             </p>
           </div>
         </footer>
       </div>
-
-      {/* Corner Decorations */}
-      <div className="absolute top-8 left-8 w-16 h-16 border-l-2 border-t-2 border-cyan-400/20" />
-      <div className="absolute top-8 right-8 w-16 h-16 border-r-2 border-t-2 border-cyan-400/20" />
-      <div className="absolute bottom-8 left-8 w-16 h-16 border-l-2 border-b-2 border-cyan-400/20" />
-      <div className="absolute bottom-8 right-8 w-16 h-16 border-r-2 border-b-2 border-cyan-400/20" />
     </section>
   )
 }

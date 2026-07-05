@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import Preloader from "@/components/preloader"
 import HeroSection from "@/components/hero-section"
+import AICallingSection from "@/components/ai-calling"
 import WhatWeDo from "@/components/what-we-do"
-import AIDemo from "@/components/ai-demo"
 import ContactFooter from "@/components/contact-footer"
 import SplashCursor from "@/components/splash-cursor"
 import Navbar from '@/components/Navbar';
@@ -38,8 +38,8 @@ export default function Home() {
 
         <HeroSection />
 
+        <AICallingSection />
         <WhatWeDo />
-        <AIDemo />
         <Portfolio />
         <ContactFooter />
       </main>
