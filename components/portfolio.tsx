@@ -12,6 +12,7 @@ const logos = [
 ]
 
 const secondRowLogos = [
+  { name: "Mintsy Plus",        image: "/cygnuz/minty.png"  },
   { name: "Ecosaathi",        image: "/cygnuz/ecosaathi.png"  },
   { name: "UrEwaste",         image: "/cygnuz/urewaste.png"   },
   { name: "Terminix",         image: "/cygnuz/terminix.png"   },
