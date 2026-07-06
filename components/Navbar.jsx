@@ -1,4 +1,5 @@
-// components/Navbar.jsx
+"use client"
+
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
@@ -6,11 +7,11 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "AI Calling", href: "#ai-calling" },
-    { name: "Services", href: "#services" },
-    { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home",       href: "/"           },
+    { name: "AI Calling", href: "/ai-calling" },
+    { name: "Services",   href: "/#services"  },
+    { name: "Projects",   href: "/#projects"  },
+    { name: "Contact",    href: "/#contact"   },
   ];
 
   return (

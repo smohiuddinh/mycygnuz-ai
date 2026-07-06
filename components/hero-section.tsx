@@ -77,9 +77,9 @@ export default function HeroSection() {
           ref={titleRef}
           className="opacity-0 translate-y-10 transition-all duration-1000 ease-out text-4xl md:text-6xl font-semibold tracking-tight leading-tight mb-6"
         >
-          <span className="text-slate-100">Build Smarter.</span>
+          <span className="text-slate-100">We Help You Automate,</span>
           <br />
-          <span className="text-slate-100">Automate Faster.</span>
+          <span className="text-slate-100">Scale & Save 100+ Hours a Month Using AI</span>
           <br />
           <span className="text-slate-400 text-2xl md:text-3xl font-normal mt-2 block">
             Powered by Cygnuz AI
@@ -124,14 +124,14 @@ export default function HeroSection() {
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <a
-              href="#services"
+              href="/#services"
               className="group flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-slate-100 hover:bg-white text-slate-900 font-semibold text-sm transition-all duration-300"
             >
               Explore Our Services
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </a>
             <a
-              href="#ai-calling"
+              href="/ai-calling"
               className="flex items-center justify-center gap-2 px-7 py-3 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-600 font-semibold text-sm transition-all duration-300"
             >
               <PhoneCall className="h-4 w-4" />
