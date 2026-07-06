@@ -5,7 +5,7 @@ import Image from "next/image"
 
 const logos = [
   { name: "Engro",    image: "/cygnuz/engro.png"    },
-  { name: "Ehive",    image: "/cygnuz/ehive.png"    },
+  { name: "KrineX",    image: "/cygnuz/krinex.png"    },
   { name: "PalmCare", image: "/cygnuz/palmcare.webp" },
   { name: "Suhaib",   image: "/cygnuz/suhaib.png"   },
   { name: "Legerium", image: "/cygnuz/logo_bg.png"  },
