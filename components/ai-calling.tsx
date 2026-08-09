@@ -244,11 +244,13 @@ export default function AICallingSection() {
               ))}
             </ul>
             <a
-              href="#contact"
+              href="https://aicalling.cygnuzai.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-slate-100 hover:bg-white text-slate-900 font-semibold text-sm transition-all duration-300"
             >
               <PhoneCall className="h-4 w-4" />
-              Get AI Calling for Your Business
+              Visit AI Calling Agent
             </a>
           </div>
         </div>

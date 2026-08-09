@@ -37,10 +37,12 @@ export default function AICallingPage() {
             and supports customers — with zero wait time and no human required.
           </p>
           <a
-            href="#contact"
+            href="https://aicalling.cygnuzai.com/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-slate-100 hover:bg-white text-slate-900 font-semibold text-sm transition-all duration-200"
           >
-            Get AI Calling for Your Business
+            Visit AI Calling Agent
           </a>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-px bg-slate-800" />
