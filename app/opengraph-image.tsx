@@ -1,163 +1,78 @@
-import { ImageResponse } from 'next/og'
+import { ImageResponse } from "next/og"
+import { readFile } from "node:fs/promises"
+import { join } from "node:path"
 
-export const runtime = 'edge'
-export const alt = 'Cygnuz AI — 24/7 AI Calling & Automation Agency'
+export const alt = "Cygnuz AI — AI automation agency building AI agents, 24/7 voice agents and workflow automation"
 export const size = { width: 1200, height: 630 }
-export const contentType = 'image/png'
+export const contentType = "image/png"
 
 export default async function Image() {
+  const logo = await readFile(join(process.cwd(), "public/images/cygnuz-logo.png"))
+  const logoSrc = `data:image/png;base64,${logo.toString("base64")}`
+
   return new ImageResponse(
     (
       <div
         style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'linear-gradient(135deg, #000000 0%, #0a0e1a 50%, #000d1a 100%)',
-          fontFamily: 'sans-serif',
-          position: 'relative',
-          overflow: 'hidden',
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          padding: "64px 72px",
+          background: "radial-gradient(ellipse 80% 70% at 50% -10%, #0e3a4a 0%, #020617 60%)",
+          color: "#fff",
+          fontFamily: "sans-serif",
         }}
       >
-        {/* Grid pattern overlay */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage:
-              'radial-gradient(circle, rgba(0,212,255,0.08) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-
-        {/* Glow blob */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-80px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '600px',
-            height: '300px',
-            background: 'radial-gradient(ellipse, rgba(6,182,212,0.15) 0%, transparent 70%)',
-            borderRadius: '50%',
-          }}
-        />
-
-        {/* Live badge */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '6px 18px',
-            borderRadius: '20px',
-            border: '1px solid rgba(6,182,212,0.4)',
-            background: 'rgba(6,182,212,0.1)',
-            color: '#22d3ee',
-            fontSize: '13px',
-            fontWeight: 600,
-            letterSpacing: '2px',
-            textTransform: 'uppercase',
-            marginBottom: '28px',
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={logoSrc} width={300} height={163} style={{ marginLeft: -60, marginTop: -30 }} alt="" />
           <div
             style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: '#22d3ee',
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "10px 20px",
+              borderRadius: 999,
+              border: "1px solid rgba(103,232,249,0.3)",
+              background: "rgba(34,211,238,0.08)",
+              color: "#a5f3fc",
+              fontSize: 20,
             }}
-          />
-          24/7 AI Calling Service
+          >
+            <div style={{ width: 10, height: 10, borderRadius: 999, background: "#34d399" }} />
+            AI Call Agents live 24/7
+          </div>
         </div>
 
-        {/* Main headline */}
-        <div
-          style={{
-            fontSize: '72px',
-            fontWeight: 800,
-            textAlign: 'center',
-            lineHeight: 1.1,
-            marginBottom: '16px',
-            background: 'linear-gradient(90deg, #22d3ee, #3b82f6, #a855f7)',
-            backgroundClip: 'text',
-            color: 'transparent',
-          }}
-        >
-          Cygnuz AI
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ fontSize: 26, color: "#67e8f9", letterSpacing: 4, textTransform: "uppercase", marginBottom: 20 }}>
+            AI Automation Agency
+          </div>
+          <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.08, letterSpacing: -1.5, maxWidth: 980 }}>
+            AI agents & automation that give your team 100+ hours back every month
+          </div>
         </div>
 
-        <div
-          style={{
-            fontSize: '34px',
-            fontWeight: 600,
-            color: '#ffffff',
-            textAlign: 'center',
-            marginBottom: '24px',
-          }}
-        >
-          AI Calling Agents That Never Sleep
-        </div>
-
-        {/* Description */}
-        <div
-          style={{
-            fontSize: '18px',
-            color: '#94a3b8',
-            textAlign: 'center',
-            maxWidth: '700px',
-            lineHeight: 1.5,
-            marginBottom: '40px',
-          }}
-        >
-          Inbound support · Outbound sales · Appointment booking · Lead qualification
-        </div>
-
-        {/* Stat pills */}
-        <div style={{ display: 'flex', gap: '16px' }}>
-          {[
-            { value: '24/7', label: 'Always Active' },
-            { value: '< 1s', label: 'Response Time' },
-            { value: '95%', label: 'Resolution Rate' },
-          ].map(({ value, label }) => (
+        <div style={{ display: "flex", gap: 14, fontSize: 22, color: "#94a3b8" }}>
+          {["AI Call Agents", "Workflow Automation", "AI Chatbots", "Custom AI Software"].map((s) => (
             <div
-              key={label}
+              key={s}
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '12px 24px',
-                borderRadius: '12px',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                display: "flex",
+                padding: "10px 20px",
+                borderRadius: 14,
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.03)",
               }}
             >
-              <div style={{ fontSize: '28px', fontWeight: 700, color: '#22d3ee' }}>{value}</div>
-              <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{label}</div>
+              {s}
             </div>
           ))}
         </div>
-
-        {/* URL watermark */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '28px',
-            right: '40px',
-            fontSize: '14px',
-            color: '#334155',
-            letterSpacing: '1px',
-          }}
-        >
-          cygnuz.ai
-        </div>
       </div>
     ),
-    { ...size }
+    { ...size },
   )
 }

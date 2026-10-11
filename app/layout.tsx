@@ -1,286 +1,141 @@
-import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
-import WhatsAppFloat from '@/components/whatsapp-float'
-import './globals.css'
-
-const siteUrl = 'https://www.cygnuz.ai'
+import type { Metadata, Viewport } from "next"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
+import Navbar from "@/components/navbar"
+import SiteFooter from "@/components/site-footer"
+import Preloader from "@/components/preloader"
+import RevealObserver from "@/components/reveal-observer"
+import WhatsAppFloat from "@/components/whatsapp-float"
+import { site } from "@/lib/site"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  // ── Core ──────────────────────────────────────────────────────────────────
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(site.url),
   title: {
-    default: 'Cygnuz AI — AI Calling & Automation Agency | 24/7 Voice Agents',
-    template: '%s | Cygnuz AI',
+    default: "Cygnuz AI — AI Automation Agency for AI Agents & Workflows",
+    template: "%s | Cygnuz AI",
   },
-  description:
-    'Cygnuz AI builds 24/7 AI calling agents, chatbots, and workflow automation that handle calls, book appointments, qualify leads, and support customers — round the clock. Based in Karachi, Pakistan.',
-  keywords: [
-    'AI calling service',
-    'AI voice agent',
-    '24/7 AI calls',
-    'AI call center',
-    'automated calling',
-    'AI chatbot',
-    'workflow automation',
-    'AI automation agency',
-    'AI for business',
-    'appointment booking AI',
-    'lead qualification AI',
-    'conversational AI',
-    'Cygnuz AI',
-    'AI agency Pakistan',
-    'AI agency Karachi',
-    'business automation',
-    'voice AI',
-    'inbound call AI',
-    'outbound call AI',
-    'custom AI solutions',
-  ],
-  authors: [{ name: 'Cygnuz AI', url: siteUrl }],
-  creator: 'Cygnuz AI',
-  publisher: 'Cygnuz AI',
-  category: 'Technology',
-
-  // ── Canonical ─────────────────────────────────────────────────────────────
-  alternates: {
-    canonical: '/',
-  },
-
-  // ── Open Graph ────────────────────────────────────────────────────────────
+  description: site.description,
+  applicationName: site.name,
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  publisher: site.name,
+  category: "Technology",
+  alternates: { canonical: "/" },
   openGraph: {
-    type: 'website',
-    url: siteUrl,
-    siteName: 'Cygnuz AI',
-    title: 'Cygnuz AI — AI Calling & Automation Agency | 24/7 Voice Agents',
+    type: "website",
+    url: "/",
+    siteName: site.name,
+    locale: "en_US",
+    title: "Cygnuz AI — AI Automation Agency",
     description:
-      'Deploy AI voice agents that handle calls, book appointments, and qualify leads 24/7. Cygnuz AI builds intelligent automation for businesses of every size.',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Cygnuz AI — 24/7 AI Calling & Automation Agency',
-      },
-    ],
-    locale: 'en_US',
+      "AI agents, 24/7 AI call agents and workflow automation that cut costs and save your team 100+ hours a month.",
   },
-
-  // ── Twitter / X Card ──────────────────────────────────────────────────────
   twitter: {
-    card: 'summary_large_image',
-    site: '@cygnuzai',
-    creator: '@cygnuzai',
-    title: 'Cygnuz AI — 24/7 AI Calling Agents & Business Automation',
+    card: "summary_large_image",
+    title: "Cygnuz AI — AI Automation Agency",
     description:
-      'AI voice agents that never sleep. Inbound support, outbound sales, appointment booking & lead qualification — all automated.',
-    images: ['/og-image.png'],
+      "AI agents, 24/7 AI call agents and workflow automation that cut costs and save your team 100+ hours a month.",
   },
-
-  // ── Robots ────────────────────────────────────────────────────────────────
   robots: {
     index: true,
     follow: true,
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-
-  // ── Icons ─────────────────────────────────────────────────────────────────
-  icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-    ],
-    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
-  },
-
-  // ── Verification (add your tokens from Google/Bing Search Console) ────────
-  verification: {
-    // google: 'YOUR_GOOGLE_VERIFICATION_TOKEN',
-    // other: { 'msvalidate.01': 'YOUR_BING_TOKEN' },
-  },
+  // Add Search Console / Bing tokens here once verified:
+  // verification: { google: "", other: { "msvalidate.01": "" } },
 }
 
-// ── JSON-LD Structured Data ────────────────────────────────────────────────
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
+export const viewport: Viewport = {
+  themeColor: "#020617",
+  colorScheme: "dark",
+}
+
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
     {
-      '@type': 'Organization',
-      '@id': `${siteUrl}/#organization`,
-      name: 'Cygnuz AI',
-      url: siteUrl,
+      "@type": "Organization",
+      "@id": `${site.url}/#organization`,
+      name: site.name,
+      url: site.url,
       logo: {
-        '@type': 'ImageObject',
-        url: `${siteUrl}/images/cygnuz-logo.png`,
-        width: 300,
-        height: 150,
+        "@type": "ImageObject",
+        url: `${site.url}/icon-512.png`,
+        width: 512,
+        height: 512,
       },
-      description:
-        'AI automation agency specialising in 24/7 AI calling agents, chatbots, workflow automation, and custom AI solutions for businesses.',
+      description: site.description,
+      email: site.email,
       address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Karachi',
-        addressCountry: 'PK',
+        "@type": "PostalAddress",
+        addressLocality: site.location.city,
+        addressRegion: site.location.region,
+        addressCountry: site.location.country,
       },
+      areaServed: "Worldwide",
+      knowsAbout: [
+        "AI automation",
+        "Business process automation",
+        "AI agents",
+        "AI voice agents",
+        "Workflow automation",
+        "Conversational AI",
+        "Custom AI software development",
+      ],
       contactPoint: {
-        '@type': 'ContactPoint',
-        contactType: 'customer support',
-        email: 'cygnuzai@gmail.com',
-        availableLanguage: ['English', 'Urdu'],
+        "@type": "ContactPoint",
+        contactType: "sales",
+        email: site.email,
+        telephone: `+${site.whatsapp}`,
+        availableLanguage: ["English", "Urdu"],
       },
-      sameAs: [
-        'https://www.linkedin.com/company/cygnuzai',
-        'https://instagram.com/cygnuz.ai',
-      ],
+      sameAs: [site.socials.linkedin, site.socials.instagram],
     },
     {
-      '@type': 'WebSite',
-      '@id': `${siteUrl}/#website`,
-      url: siteUrl,
-      name: 'Cygnuz AI',
-      publisher: { '@id': `${siteUrl}/#organization` },
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: { '@type': 'EntryPoint', urlTemplate: `${siteUrl}/?s={search_term_string}` },
-        'query-input': 'required name=search_term_string',
-      },
-    },
-    {
-      '@type': 'WebPage',
-      '@id': `${siteUrl}/#webpage`,
-      url: siteUrl,
-      name: 'Cygnuz AI — AI Calling & Automation Agency | 24/7 Voice Agents',
-      isPartOf: { '@id': `${siteUrl}/#website` },
-      about: { '@id': `${siteUrl}/#organization` },
-      description:
-        'Cygnuz AI deploys 24/7 AI voice calling agents, chatbots, and workflow automation that handle calls, book appointments, and support customers around the clock.',
-    },
-    {
-      '@type': 'Service',
-      '@id': `${siteUrl}/#ai-calling`,
-      name: 'AI Calling Service — 24/7 Voice Agents',
-      provider: { '@id': `${siteUrl}/#organization` },
-      serviceType: 'AI Voice Agent',
-      description:
-        'Intelligent AI voice agents that handle inbound and outbound calls 24 hours a day, 7 days a week. Features include natural conversation, appointment booking, lead qualification, CRM integration, and real-time call analytics.',
-      areaServed: 'Worldwide',
-      availableChannel: {
-        '@type': 'ServiceChannel',
-        serviceUrl: siteUrl,
-      },
-    },
-    {
-      '@type': 'ItemList',
-      name: 'Cygnuz AI Services',
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: 'AI Calling Service',
-          description: '24/7 AI voice agents for inbound support, outbound sales, and appointment booking.',
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: 'AI Chatbots',
-          description: 'Conversational AI agents for customer support and engagement across platforms.',
-        },
-        {
-          '@type': 'ListItem',
-          position: 3,
-          name: 'Workflow Automation',
-          description: 'End-to-end business process automation with smart AI decision-making.',
-        },
-        {
-          '@type': 'ListItem',
-          position: 4,
-          name: 'Custom AI Solutions',
-          description: 'Bespoke artificial intelligence engineered around your specific business needs.',
-        },
-      ],
-    },
-    {
-      '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: 'What is an AI calling service?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'An AI calling service uses voice AI technology to automatically handle phone calls on behalf of a business — answering queries, booking appointments, qualifying leads, and providing support 24/7 without human agents.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Does Cygnuz AI work 24/7?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Yes. Cygnuz AI voice agents are always active — they handle calls, respond to chats, and automate workflows 24 hours a day, 7 days a week, with no downtime.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Can the AI booking agent integrate with my calendar and CRM?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Absolutely. Cygnuz AI integrates with popular CRM platforms, Google Calendar, and other scheduling tools so every appointment and lead is automatically synced.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Where is Cygnuz AI based?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Cygnuz AI is headquartered in Karachi, Pakistan, and serves clients worldwide.',
-          },
-        },
-      ],
+      "@type": "WebSite",
+      "@id": `${site.url}/#website`,
+      url: site.url,
+      name: site.name,
+      inLanguage: "en",
+      publisher: { "@id": `${site.url}/#organization` },
     },
   ],
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+// Runs before first paint: flags JS for the reveal system and skips the
+// preloader for visitors who have already seen it this session.
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{if(sessionStorage.getItem('cz-preloaded'))d.setAttribute('data-preloaded','')}catch(e){}})();`
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <head>
-        <style>{`
-html {
-  font-family: ${GeistSans.style.fontFamily};
-  --font-sans: ${GeistSans.variable};
-  --font-mono: ${GeistMono.variable};
-}
-        `}</style>
-        {/* JSON-LD Structured Data */}
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
-        {/* Preconnect for performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Theme color for mobile browsers */}
-        <meta name="theme-color" content="#000000" />
-        <meta name="msapplication-TileColor" content="#000000" />
-        {/* Geo tags */}
-        <meta name="geo.region" content="PK-SD" />
-        <meta name="geo.placename" content="Karachi, Pakistan" />
-        <meta name="language" content="English" />
-        <meta name="revisit-after" content="7 days" />
       </head>
-      <body suppressHydrationWarning>
-        {children}
+      <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-950"
+        >
+          Skip to content
+        </a>
+        <Preloader />
+        <Navbar />
+        <main id="main">{children}</main>
+        <SiteFooter />
         <WhatsAppFloat />
+        <RevealObserver />
       </body>
     </html>
   )

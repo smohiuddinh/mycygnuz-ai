@@ -1,38 +1,11 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from "next"
+import { site } from "@/lib/site"
 
-const siteUrl = 'https://www.cygnuz.ai'
-
+// Only real, indexable URLs — fragment links (/#services) are not separate pages.
 export default function sitemap(): MetadataRoute.Sitemap {
+  const lastModified = new Date()
   return [
-    {
-      url: siteUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${siteUrl}/#ai-calling`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${siteUrl}/#services`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/#projects`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/#contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
+    { url: site.url, lastModified, changeFrequency: "weekly", priority: 1 },
+    { url: `${site.url}/ai-calling`, lastModified, changeFrequency: "monthly", priority: 0.9 },
   ]
 }

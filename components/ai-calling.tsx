@@ -1,39 +1,22 @@
-"use client"
-
-import { useEffect, useRef, useState } from "react"
+import Link from "next/link"
 import {
-  PhoneCall, PhoneIncoming, PhoneOutgoing,
-  Calendar, Users, BarChart3, CheckCircle2, Clock, Globe, Zap,
+  ArrowRight, BarChart3, Calendar, CheckCircle2, Clock, Globe, PhoneCall,
+  PhoneIncoming, PhoneOutgoing, Users, Zap,
 } from "lucide-react"
+import SectionHeading from "@/components/section-heading"
 
 const useCases = [
-  {
-    icon: PhoneIncoming,
-    title: "Inbound Support",
-    description: "Answer every call instantly — no hold music, no missed customers.",
-  },
-  {
-    icon: PhoneOutgoing,
-    title: "Outbound Sales",
-    description: "Automatically follow up leads, re-engage cold contacts, and close more deals.",
-  },
-  {
-    icon: Calendar,
-    title: "Appointment Booking",
-    description: "Book, reschedule, and remind — all via voice without any human effort.",
-  },
-  {
-    icon: Users,
-    title: "Lead Qualification",
-    description: "Ask the right questions and route hot leads directly to your sales team.",
-  },
+  { icon: PhoneIncoming, title: "Inbound support", description: "Answer every call instantly — no hold music, no missed customers, no after-hours voicemail." },
+  { icon: PhoneOutgoing, title: "Outbound sales", description: "Follow up new leads in minutes, re-engage cold contacts and keep your pipeline moving." },
+  { icon: Calendar, title: "Appointment booking", description: "Book, reschedule and remind by voice, synced straight to your calendar." },
+  { icon: Users, title: "Lead qualification", description: "Ask the right questions and route hot leads directly to your sales team." },
 ]
 
 const stats = [
   { value: "24/7", label: "Always available", icon: Clock },
-  { value: "< 1s", label: "Response time",   icon: Zap      },
-  { value: "10+",  label: "Languages",        icon: Globe    },
-  { value: "95%",  label: "Resolution rate",  icon: BarChart3 },
+  { value: "< 1s", label: "Response time", icon: Zap },
+  { value: "10+", label: "Languages", icon: Globe },
+  { value: "95%", label: "Resolution rate", icon: BarChart3 },
 ]
 
 const features = [
@@ -45,253 +28,147 @@ const features = [
   "Full call analytics dashboard",
 ]
 
-function WaveAnimation() {
+const transcript = [
+  { from: "caller", text: "Hi, I'd like to book an appointment for next Tuesday." },
+  { from: "ai", text: "Of course! I have 10 AM and 2 PM available. Which works best?" },
+  { from: "caller", text: "2 PM would be perfect." },
+  { from: "ai", text: "Done — you're booked for Tuesday at 2 PM. I'll text you a reminder." },
+]
+
+function CallCard() {
   return (
-    <div className="flex items-end justify-center gap-1 h-10">
-      {[1, 2, 3, 4, 5, 4, 3, 2, 1].map((h, i) => (
-        <div
-          key={i}
-          className="w-1.5 rounded-full bg-slate-500"
-          style={{
-            height: `${h * 8}px`,
-            animation: `wave-bar 1.2s ease-in-out infinite`,
-            animationDelay: `${i * 100}ms`,
-          }}
-        />
-      ))}
-      <style>{`
-        @keyframes wave-bar {
-          0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
-          50%       { transform: scaleY(1);   opacity: 1;   }
-        }
-      `}</style>
+    <div className="card overflow-hidden rounded-3xl border-white/10 bg-slate-950/70 p-5 shadow-2xl shadow-black/30 sm:p-6" aria-label="Example AI call transcript" role="figure">
+      <div className="hairline" />
+      <div className="mb-5 flex items-center gap-3">
+        <span className="icon-tile relative">
+          <PhoneCall className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+        </span>
+        <div>
+          <p className="text-sm font-medium text-slate-100">AI Voice Agent</p>
+          <p className="flex items-center gap-2 text-xs text-emerald-400">
+            <span className="live-dot" /> Live call
+          </p>
+        </div>
+        <span className="ml-auto font-mono text-xs text-slate-500">02:47</span>
+      </div>
+
+      <div className="mb-5 flex h-14 items-end justify-center gap-[3px] rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-3" aria-hidden="true">
+        {[4, 7, 10, 6, 12, 8, 13, 7, 11, 5, 9, 12, 6, 10, 4].map((h, i) => (
+          <span key={i} className="wave-bar w-[3px] rounded-full bg-gradient-to-t from-cyan-500/60 to-cyan-200"
+            style={{ height: `${h * 2.4}px`, animationDelay: `${(i % 5) * 0.14}s` }} />
+        ))}
+      </div>
+
+      <ul className="mb-5 space-y-2.5">
+        {transcript.map((line, i) => (
+          <li key={i} className={line.from === "ai" ? "flex justify-end" : "flex"}>
+            <span className="sr-only">{line.from === "ai" ? "AI agent:" : "Caller:"}</span>
+            <p
+              className={
+                line.from === "ai"
+                  ? "max-w-[85%] rounded-2xl rounded-br-md border border-cyan-300/15 bg-cyan-400/[0.07] px-3.5 py-2.5 text-sm leading-relaxed text-cyan-50"
+                  : "max-w-[85%] rounded-2xl rounded-bl-md border border-white/[0.07] bg-white/[0.03] px-3.5 py-2.5 text-sm leading-relaxed text-slate-300"
+              }
+            >
+              {line.text}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <p className="flex items-center gap-2.5 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] px-3.5 py-2.5 text-xs text-emerald-200">
+        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" aria-hidden />
+        Appointment booked & synced to calendar
+      </p>
     </div>
   )
 }
 
-export default function AICallingSection() {
-  const [visible, setVisible] = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true) },
-      { threshold: 0.1 }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
+export default function AICallingSection({ appUrl }: { appUrl: string }) {
   return (
-    <section
-      id="ai-calling"
-      ref={sectionRef}
-      className="relative bg-slate-900 py-16 px-4 sm:py-24 sm:px-6 overflow-hidden"
-    >
-      {/* Top divider */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-slate-800" />
-
-      <div className="relative z-10 max-w-6xl mx-auto">
-
-        {/* Header */}
-        <div
-          className="mb-14"
-          style={{
-            opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity 0.7s ease, transform 0.7s ease",
-          }}
-        >
-          <span className="mb-3 inline-block text-xs font-medium uppercase tracking-widest text-slate-500">
-            Flagship Product
-          </span>
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <h2 className="text-3xl font-semibold tracking-tight text-slate-100 md:text-4xl">
-              AI Call Agent
-            </h2>
-            <p className="max-w-sm text-sm leading-relaxed text-slate-500">
-              Intelligent voice agents that handle your calls 24 hours a day, 7 days a week — at any scale.
-            </p>
-          </div>
+    <>
+      {/* Stats */}
+      <section aria-label="AI Call Agent at a glance" className="relative pb-4">
+        <div className="container-page">
+          <dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {stats.map(({ value, label, icon: Icon }, i) => (
+              // A dl allows exactly one wrapping div per group, so the reveal and card share it
+              // (no hover transitions here for the reveal styles to override).
+              <div
+                key={label}
+                data-reveal
+                style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
+                className="card flex h-full flex-col items-start gap-3 p-5 sm:p-6"
+              >
+                <Icon className="h-5 w-5 text-cyan-300" strokeWidth={1.75} aria-hidden />
+                <dt className="order-last text-sm text-slate-400">{label}</dt>
+                <dd className="text-3xl font-semibold tracking-tight text-white">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
+      </section>
 
-        {/* Stats */}
-        <div
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
-        >
-          {stats.map(({ value, label, icon: Icon }, i) => (
-            <div
-              key={label}
-              className="flex flex-col items-center gap-2 p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:border-slate-700 hover:bg-slate-900/70 transition-all duration-300"
-              style={{
-                opacity: visible ? 1 : 0,
-                transform: visible ? "translateY(0)" : "translateY(20px)",
-                transition: `opacity 0.6s ease ${i * 80 + 100}ms, transform 0.6s ease ${i * 80 + 100}ms`,
-              }}
-            >
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-400">
-                <Icon className="h-4 w-4" strokeWidth={1.75} />
-              </div>
-              <div className="text-2xl font-semibold text-slate-100">{value}</div>
-              <div className="text-xs text-slate-500 text-center">{label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Phone card + features */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center mb-14">
-
-          {/* Left: call card */}
-          <div
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateX(0)" : "translateX(-24px)",
-              transition: "opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s",
-            }}
-          >
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 overflow-hidden">
-
-              {/* Call header */}
-              <div className="flex items-center gap-3 mb-5">
-                <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-slate-300">
-                  <PhoneCall className="h-4 w-4" strokeWidth={1.75} />
-                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
-                  </span>
-                </div>
-                <div>
-                  <div className="text-slate-200 font-medium text-sm">AI Voice Agent</div>
-                  <div className="text-emerald-500 text-xs flex items-center gap-1.5">
-                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    Live — Active Call
-                  </div>
-                </div>
-                <div className="ml-auto text-slate-600 text-xs font-mono">02:47</div>
-              </div>
-
-              {/* Waveform */}
-              <div className="rounded-xl bg-slate-800/60 border border-slate-800 p-4 mb-5">
-                <WaveAnimation />
-                <div className="mt-3 text-center text-slate-600 text-xs">Processing natural speech…</div>
-              </div>
-
-              {/* Transcript */}
-              <div className="space-y-3 mb-5">
-                {[
-                  { from: "customer", text: "I'd like to book an appointment for next Tuesday." },
-                  { from: "ai",       text: "Of course! I have slots at 10 AM and 2 PM. Which works best?" },
-                  { from: "customer", text: "2 PM would be perfect." },
-                  { from: "ai",       text: "Confirmed! You're booked for Tuesday at 2 PM. A reminder will be sent." },
-                ].map((line, i) => (
-                  <div
-                    key={i}
-                    className={`flex gap-2 ${line.from === "ai" ? "flex-row-reverse" : ""}`}
-                    style={{
-                      opacity: visible ? 1 : 0,
-                      transition: `opacity 0.4s ease ${0.4 + i * 0.15}s`,
-                    }}
-                  >
-                    <div className={`text-xs px-3 py-2 rounded-xl max-w-[80%] leading-relaxed border ${
-                      line.from === "ai"
-                        ? "bg-slate-800 text-slate-200 border-slate-700"
-                        : "bg-slate-800/40 text-slate-400 border-slate-800"
-                    }`}>
-                      {line.text}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Confirmed badge */}
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800/60 border border-slate-700">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                <span className="text-slate-400 text-xs">Appointment booked & synced to calendar</span>
-              </div>
-            </div>
+      {/* Demo + features */}
+      <section aria-labelledby="ai-features-title" className="section">
+        <div className="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          <div data-reveal>
+            <CallCard />
           </div>
-
-          {/* Right: features */}
-          <div
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateX(0)" : "translateX(24px)",
-              transition: "opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s",
-            }}
-          >
-            <h3 className="text-xl font-semibold text-slate-100 mb-3">
+          <div data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties}>
+            <span className="eyebrow mb-4">How it sounds</span>
+            <h2 id="ai-features-title" className="mb-5 mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
               Everything your phone line needs — powered by AI
-            </h3>
-            <p className="text-slate-500 text-sm mb-7 leading-relaxed">
-              From the first ring to post-call follow-up, our AI calling agents manage the full conversation lifecycle so your team can focus on what only humans can do.
+            </h2>
+            <p className="mb-8 text-base leading-relaxed text-slate-400">
+              From the first ring to the post-call follow-up, your AI call agent manages the full conversation so your
+              team can focus on the work only humans can do.
             </p>
-            <ul className="flex flex-col gap-3 mb-8">
-              {features.map((f, i) => (
-                <li
-                  key={f}
-                  className="flex items-center gap-3"
-                  style={{
-                    opacity: visible ? 1 : 0,
-                    transform: visible ? "translateX(0)" : "translateX(12px)",
-                    transition: `opacity 0.5s ease ${0.4 + i * 0.07}s, transform 0.5s ease ${0.4 + i * 0.07}s`,
-                  }}
-                >
-                  <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-500" />
-                  <span className="text-slate-400 text-sm">{f}</span>
+            <ul className="mb-9 grid gap-3 sm:grid-cols-2">
+              {features.map((f) => (
+                <li key={f} className="flex items-start gap-2.5 text-sm text-slate-300">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300" aria-hidden />
+                  {f}
                 </li>
               ))}
             </ul>
-            <a
-              href="https://aicalling.cygnuzai.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-slate-100 hover:bg-white text-slate-900 font-semibold text-sm transition-all duration-300"
-            >
-              <PhoneCall className="h-4 w-4" />
-              Visit AI Calling Agent
-            </a>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <a href={appUrl} target="_blank" rel="noopener noreferrer" className="btn-primary group">
+                Try the AI Call Agent
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+              </a>
+              <Link href="#contact" className="btn-secondary">
+                Book a demo call
+              </Link>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Use case cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {useCases.map((uc, i) => {
-            const Icon = uc.icon
-            return (
-              <div
-                key={uc.title}
-                className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 transition-colors duration-300 hover:border-slate-700 hover:bg-slate-900/70"
-                style={{
-                  opacity: visible ? 1 : 0,
-                  transform: visible ? "translateY(0)" : "translateY(24px)",
-                  transition: `opacity 0.6s ease ${0.5 + i * 0.1}s, transform 0.6s ease ${0.5 + i * 0.1}s`,
-                }}
-              >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-slate-300">
-                  <Icon className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <h4 className="text-slate-100 font-semibold text-sm mb-2">{uc.title}</h4>
-                <p className="text-slate-500 text-xs leading-relaxed">{uc.description}</p>
+      {/* Use cases */}
+      <section aria-labelledby="use-cases-title" className="section pt-0 sm:pt-0 lg:pt-0">
+        <div className="container-page">
+          <SectionHeading
+            id="use-cases-title"
+            eyebrow="Use cases"
+            title="One agent, every kind of call"
+            description="Deploy it on a single workflow or across your whole phone operation."
+          />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {useCases.map(({ icon: Icon, title, description }, i) => (
+              <div key={title} data-reveal style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}>
+                <article className="card card-hover h-full p-7">
+                  <span className="icon-tile mb-6">
+                    <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+                  </span>
+                  <h3 className="mb-2.5 text-lg font-semibold text-white">{title}</h3>
+                  <p className="text-[15px] leading-relaxed text-slate-400">{description}</p>
+                </article>
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
-
-        {/* Bottom tags */}
-        <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-slate-800 pt-8">
-          {["24/7 active", "Human-like voice", "Multi-language", "CRM ready"].map((tag) => (
-            <div key={tag} className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <span className="text-xs uppercase tracking-wider text-slate-500">{tag}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom divider */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-slate-800" />
-    </section>
+      </section>
+    </>
   )
 }

@@ -1,21 +1,10 @@
-import { MetadataRoute } from 'next'
-
-const siteUrl = 'https://www.cygnuz.ai'
+import type { MetadataRoute } from "next"
+import { site } from "@/lib/site"
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [
-      {
-        userAgent: '*',
-        allow: '/',
-        disallow: ['/api/', '/_next/'],
-      },
-      {
-        userAgent: 'Googlebot',
-        allow: '/',
-      },
-    ],
-    sitemap: `${siteUrl}/sitemap.xml`,
-    host: siteUrl,
+    rules: [{ userAgent: "*", allow: "/", disallow: ["/api/"] }],
+    sitemap: `${site.url}/sitemap.xml`,
+    host: site.url,
   }
 }
